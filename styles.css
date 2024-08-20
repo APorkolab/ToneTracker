@@ -1,0 +1,244 @@
+/* Alapszínek és változók */
+:root {
+	--primary-color: #1e90ff;
+	/* Sötétebb kék */
+	--secondary-color: #555555;
+	/* Közepes szürke */
+	--success-color: #28a745;
+	/* Sötétebb zöld */
+	--warning-color: #ffc107;
+	/* Világosabb sárga */
+	--danger-color: #ff6347;
+	/* Sötét narancs */
+	--light-color: #2b2b2b;
+	/* Sötétszürke */
+	--dark-color: #f4f4f4;
+	/* Világos szürke */
+	--background-color: #1c1c1c;
+	/* Sötét háttér */
+	--border-radius: 10px;
+	--transition-speed: 0.3s;
+}
+
+/* Testreszabott Bootstrap gombok */
+.btn {
+	border-radius: var(--border-radius);
+	padding: 10px 20px;
+	font-weight: bold;
+	transition: background-color var(--transition-speed), transform var(--transition-speed);
+	color: white;
+}
+
+.btn:hover {
+	transform: scale(1.05);
+}
+
+.btn-primary {
+	background-color: var(--primary-color);
+	border: none;
+}
+
+.btn-primary:hover {
+	background-color: #1c86ee;
+	/* Sötétebb kék */
+}
+
+.btn-warning {
+	background-color: var(--warning-color);
+	border: none;
+	color: #000;
+	/* Sötétebb betűszín */
+}
+
+.btn-warning:hover {
+	background-color: #e6b800;
+	/* Sötétebb sárga */
+}
+
+.btn-success {
+	background-color: var(--success-color);
+	border: none;
+}
+
+.btn-success:hover {
+	background-color: #218838;
+	/* Sötétebb zöld */
+}
+
+/* Testreszabott bemenetek */
+input.form-control {
+	border-radius: var(--border-radius);
+	border: 2px solid var(--secondary-color);
+	padding: 10px;
+	background-color: var(--light-color);
+	/* Sötét bemenet mező */
+	color: white;
+	transition: border-color var(--transition-speed);
+}
+
+input.form-control:focus {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+	/* Sötétebb kék árnyék */
+}
+
+/* Szín dobozok stílusa */
+.color-box {
+	background-color: var(--light-color);
+	border-radius: var(--border-radius);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+	min-height: 150px;
+}
+
+.color-box:hover {
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Cím stílus */
+h1 {
+	font-size: 2.5rem;
+	font-weight: bold;
+	color: var(--dark-color);
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+	position: relative;
+}
+
+h1::after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 4px;
+	background-color: var(--primary-color);
+	margin: 10px auto 0;
+}
+
+/* Feedback szöveg */
+#feedback {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: var(--danger-color);
+}
+
+/* Modal stílus */
+.modal-content {
+	border-radius: var(--border-radius);
+	background-color: var(--light-color);
+	color: var(--dark-color);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+	border-bottom: none;
+	background-color: var(--primary-color);
+	color: white;
+	border-top-left-radius: var(--border-radius);
+	border-top-right-radius: var(--border-radius);
+}
+
+.modal-title {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.modal-footer {
+	border-top: none;
+	justify-content: center;
+}
+
+/* Általános stílusok */
+body {
+	background-color: var(--background-color);
+	color: var(--dark-color);
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 800px;
+	background-color: var(--light-color);
+	padding: 30px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Reszponzív stílusok */
+@media (max-width: 768px) {
+	h1 {
+		font-size: 2rem;
+	}
+
+	.color-box {
+		min-height: 100px;
+	}
+
+	.btn {
+		width: 100%;
+		margin-bottom: 10px;
+	}
+
+	.input-group {
+		flex-direction: column;
+	}
+}
+
+/* Creator Card stílusai */
+.creator-card {
+	background-color: var(--light-color);
+	border-radius: var(--border-radius);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	color: var(--dark-color);
+	max-width: 600px;
+	margin: 0 auto;
+	transition: transform 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+
+.creator-card:hover {
+	transform: scale(1.05);
+}
+
+.creator-card::before {
+	content: "Author";
+	position: absolute;
+	top: 0px;
+	right: -20px;
+	background-color: var(--primary-color);
+	color: white;
+	padding: 10px;
+	transform: rotate(45deg);
+	font-size: 2rem;
+	font-weight: bold;
+}
+
+.creator-name {
+	font-size: 2rem;
+	font-weight: bold;
+	color: var(--primary-color);
+}
+
+.creator-title {
+	font-size: 1.2rem;
+	color: var(--secondary-color);
+	margin-bottom: 1rem;
+}
+
+.creator-bio {
+	font-size: 1rem;
+	color: var(--dark-color);
+	margin-bottom: 1.5rem;
+}
+
+.creator-contact a {
+	color: var(--primary-color);
+	font-weight: bold;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.creator-contact a:hover {
+	color: var(--success-color);
+}
