@@ -64,7 +64,7 @@ The main contributor to this project is [Adam Dr. Porkolab (Mr. ProKey)](www.git
 
 The author welcomes any feedback or suggestions.
 
-The author website is [www.prokey.dev](www.prokey.dev).
+The author website is [www.adamporkolab.hu](www.adamporkolab.hu).
 
 ## License
 
