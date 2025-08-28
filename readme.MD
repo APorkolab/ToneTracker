@@ -1,76 +1,104 @@
-# ToneTracker - Color Guessing Game
+# ToneTracker v2.0.0 - A Modern Color Guessing Game
 
 <p align="center">
-    <a href="https://www.typescriptlang.org/"><img height="20" src="https://img.shields.io/badge/built_with-HTML-orange.svg?logo=html5" alt="Built with HTML"></a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS"><img height="20" src="https://img.shields.io/badge/built_with-CSS-blue.svg?logo=css3" alt="Built with CSS"></a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"><img height="20" src="https://img.shields.io/badge/built_with-JavaScript-yellow.svg?logo=javascript" alt="Built with JavaScript"></a>
-    <a href="https://getbootstrap.com/"><img height="20" src="https://img.shields.io/badge/built_with-Bootstrap-7952b3.svg?logo=bootstrap" alt="Built with Bootstrap"></a>
-    <a href="https://jquery.com/"><img height="20" src="https://img.shields.io/badge/built_with-jQuery-0769AD.svg?logo=jquery" alt="Built with jQuery"></a>
-    <a href="https://code.visualstudio.com/"><img height="20" src="https://img.shields.io/badge/developed_in-VS_Code-007acc.svg?logo=visual-studio-code" alt="Developed in VS Code"></a>
-    <a href="./LICENSE"><img height="20" src="https://img.shields.io/badge/license-MIT-green.svg?logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAEFCu8CAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAHKADAAQAAAABAAAAHAAAAABHddaYAAAC5UlEQVRIDd2WPWtVQRCGby5pVASLiGghQSxyG8Ui2KWwCfkH9olY2JneQkiR0oCIxH/gB+qVFDYBIWBAbAIRSbCRpLXwIxLiPT7vnNm9e87ZxJtUwYH3zO47Mzv7Mbv3tlo5KYriGtgAJ81OY1ENdG/YI4boFEOI911BXgY/pdtwGuAtXpvmB1tAXHDnUolE5urkPOQo6MqA3pXWmJJL4Bb4rQ7yEYfxsjnIF29NJIoNC6e5fxOL/qN+9KCz7AaLpN8zI415N2i2EptpGrkRIjGeAuvR6IY1hSFLFUOug9Ms2M7ZxIUNytm1mnME186sdI2BOCwAyQMg54ugzSmKmwbPwSbolKH+hbAtQdsOoF+BsF3anUVwBdiOWRidFZDKTTrKEAJTm3GVrGkHzw/uPZbyx7DNNLfB7KGmRsCcr+/gjaiPSpAOTyX9qG4L/XBDdWXDDf1M+wtQ5fwCOtcb4Dto6VpLmzByB6gqdHbTItGSJdAGqibJQhmRfCF7IN4beSF2G9CqnGXQrxofXU+EykllNeoczRgYytDKMubDIRK0g5MF8rE69cGu0u9nlUcqaUZ41W0qK2nGcSzr4D2wV9U9wxp1rnpxn8agXAOHMQ9cy9kbHM7ngY4gFb03TxrO/yfBUifTtXt78jCrjY/jgEFnMn45LuNWUtknuu7NSm7D3QEn3HbatV1Q2jvgIRf1sfODKQaeymxZoMLlTqsq1LF+HvaTqQOzEzUCfni0/eNIA+DfuE3KEtbsegckGmMktTXacnBHPVe687ugkpT+axCkkhBSyRSjWI2xf1KMMVmYiQdWksK9BEFiQoiYLIlvJA3/zeTzCejP0RbB6YPbhZuB+0pR3KcdX0LaJtju0ZgBL8Bd+sbz2QIaU2OfBX3BaQLsgZysQtrk0M8Sh1A0w3DyyYnGnAiZ4gqZ/TvI2A8OGd1YIbF7+F3P+B6dYpYdsJNZgrjO0UdOIhmom0nwL0pnfnzkL1803jAoKhvyAAAAAElFTkSuQmCC" alt="License"></a>
+  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg" alt="Version 2.0.0">
+  <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License MIT">
 </p>
 
-## Description
+<p align="center">
+  <i>A classic color guessing game, completely rebuilt with a modern, professional frontend architecture.</i>
+</p>
 
-ToneTracker is a simple color guessing game where the player tries to match a randomly generated color by adjusting the RGB values.
+---
 
-The game offers hints and allows the player to see how close they are to the target color.
+## About The Project
 
-## Features
+ToneTracker is a fun and challenging game where players test their color perception. A random color is displayed for a few seconds, and the player must try to replicate it by adjusting RGB values or entering a hex code. The game provides feedback on how close your guess is, pushing you to train your eye for color.
 
-- **Random Color Generation:** At the start of each game, a random color is generated for the player to guess.
-- **Color Adjustment:** Players can adjust the RGB values using input fields and buttons.
-- **Hints:** The game provides hints to guide the player closer to the target color.
-- **Timer:** A timer keeps track of how long the player takes to guess the correct color.
+This repository represents a significant **senior-level refactoring** of the original project, transforming it from a simple static website into a robust, maintainable, and modern web application.
+
+## Key Features
+
+- **Color Guessing Challenge**: Try to match a randomly generated color.
+- **Multiple Input Methods**: Guess by entering a hex code directly or by fine-tuning the Red, Green, and Blue channels.
+- **Real-time Feedback**: The game calculates the Delta E (color difference) and gives you a percentage of how close your guess is.
+- **Difficulty Levels**: Choose from Easy, Medium, or Hard to adjust the number of tips you get.
+- **Sleek, Modern UI**: A new "glassmorphism" interface with a refined color palette and smooth animations.
+
+## Senior Refactoring Overview
+
+The entire codebase was overhauled to align with modern, professional web development standards.
+
+- **Modern Build System**: The project now uses **Vite** as a fast and efficient build tool and development server. This allows for a modular codebase and an optimized production build.
+- **Modular Architecture**:
+    - The monolithic `script.js` was refactored into a clean, modular structure with a clear separation of concerns (state, UI, game logic, color utilities).
+    - The CSS was completely rewritten and organized into a modular structure using `@import`, separating variables, base styles, and components.
+- **Dependency-Free Frontend**: All runtime JavaScript dependencies, including **jQuery** and **Bootstrap JS**, have been completely removed in favor of modern, native Web APIs.
+- **Professional Deployment**: The `Dockerfile` has been updated to a **multi-stage build**, resulting in a smaller, more secure, and production-ready container image.
+- **Enhanced UI/UX**: The user interface has been redesigned with a "fancier" look, featuring:
+    - A modern "Poppins" font.
+    - A refined dark-theme color palette.
+    - A "glassmorphism" (frosted glass) effect on UI elements.
+    - Improved animations and transitions for a smoother user experience.
+
+## Tech Stack
+
+- **Vanilla JavaScript (ES6 Modules)**
+- **Vite** - Frontend Tooling
+- **HTML5**
+- **CSS3**
+- **Docker** & **Nginx** for deployment
+
+*All previous dependencies like jQuery and Bootstrap JS have been removed.*
+
+## Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+You need to have [Node.js](https://nodejs.org/) and `npm` installed on your machine.
+
+### Installation & Usage
+
+1.  **Clone the repository:**
+    ```sh
+    git clone https://github.com/APorkolab/ToneTracker.git
+    ```
+2.  **Navigate to the project directory:**
+    ```sh
+    cd ToneTracker
+    ```
+3.  **Install NPM packages:**
+    ```sh
+    npm install
+    ```
+4.  **Run the development server:**
+    ```sh
+    npm run dev
+    ```
+    This will start a local server, typically at `http://localhost:5173`.
+
+5.  **Build for production:**
+    ```sh
+    npm run build
+    ```
+    This will create an optimized `dist` folder with the static files, ready for deployment.
 
 ## How to Play
 
-1. Start a new game by clicking the "Start" button.
-2. Adjust the RGB values using the provided input fields and buttons.
-3. Click the "Check" button to see if your guess matches the target color.
-4. You can also ask the computer for a hint by clicking the "Computer Guess" button.
-5. The game ends when you guess the correct color or run out of attempts.
-
-## Installation
-
-1. Clone this repository:
-
-```bash
-git clone [repository-url]
-```
-
-2. Navigate to the project directory:
-
-```bash
-cd color-guessing-game
-```
-
-3. Open `index.html` in your preferred web browser.
-
-## Technologies Used
-
-- HTML
-- CSS
-- JavaScript
-- Bootstrap
-- jQuery
-- VS Code
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-The main contributor to this project is [Adam Dr. Porkolab (Mr. ProKey)](www.github.com/APorkolab).
-
-The author welcomes any feedback or suggestions.
-
-The author website is [www.adamporkolab.hu](www.adamporkolab.hu).
+1.  Click the **"New Game"** button to start.
+2.  A random color will be shown for 3 seconds. **Memorize it!**
+3.  After the color disappears, use the input field to type a hex code (e.g., `ff5733`) or use the `+` and `-` buttons to adjust the RGB components.
+4.  Your guess will be displayed in the right-hand box.
+5.  Click **"Check"** to see how close you are. You have a limited number of tips based on the difficulty level.
+6.  You can also use the **"Computer's Tip"** button for a hint.
+7.  The game ends when you guess the correct color or run out of attempts.
 
 ## License
 
-This project is licensed under the MIT License.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Acknowledgements
 
-- [Bootstrap](https://getbootstrap.com/)
-- [jQuery](https://jquery.com/)
+- Original concept and development by [Dr. Porkoláb Ádám](https://github.com/APorkolab).
