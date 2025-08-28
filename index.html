@@ -1,94 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToneTracker v.2.0.0 - by APorkolab</title>
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Színkód Kitaláló</title>
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
+  <body class="bg-light p-5">
+    <div class="container">
+      <h1 class="text-center mb-5">Tonetracker v.2.0.0</h1>
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="color-box p-5 border" id="randomColor"></div>
+        </div>
+        <div class="col-md-6">
+          <div class="color-box p-5 border" id="userColor"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          class="form-control"
+          id="colorInput"
+          placeholder="Írd be a hex színkódot (pl. ff5733)"
+        />
+      </div>
+      <div class="form-group">
+        <button class="btn btn-primary">Ellenőriz</button>
+        <button class="btn btn-warning">Gép tippje</button>
+      </div>
+      <p id="feedback" class="text-danger"></p>
+      <div class="form-group">
+        <label for="colorAdjust">Szín módosítása:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="colorAdjust"
+          placeholder="#000000"
+        />
+      </div>
+      <div class="form-group">
+        <label for="colorAdjust">Szín komponensek:</label>
+        <div class="input-group">
+          <button class="btn btn-secondary" id="minusRedButton">- R</button>
+          <button class="btn btn-secondary" id="plusRedButton">+ R</button>
+          <button class="btn btn-secondary" id="minusGreenButton">- G</button>
+          <button class="btn btn-secondary" id="plusGreenButton">+ G</button>
+          <button class="btn btn-secondary" id="minusBlueButton">- B</button>
+          <button class="btn btn-secondary" id="plusBlueButton">+ B</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="difficulty">Nehézségi szint:</label>
+        <select class="form-control" id="difficulty">
+          <option value="easy">Könnyű</option>
+          <option value="medium">Közepes</option>
+          <option value="hard">Nehéz</option>
+        </select>
+      </div>
+      <p>Idő: <span id="timer">0</span> másodperc</p>
+      <p>Pontok: <span id="score">0</span></p>
+      <button class="btn btn-success">Új játék</button>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="resultModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Eredmény</h5>
+            <button type="button" class="close-button js-modal-close">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            A helyes színkód: <span id="correctColorCode"></span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary js-modal-close">
+              Bezár
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="creator-card text-center p-4">
+        <h2 class="creator-name">Dr. Porkoláb Ádám</h2>
+        <p class="creator-title">A digitális színek mestere</p>
+        <p class="creator-bio">
+          Amikor épp nem színkódokat tör be, akkor új módszereket talál ki a
+          virtuális szivárványok hajszolására. Következetesen a 'Hex-kódtörő'
+          címért versenyez, és a billentyűzetével töri fel a színes világok
+          titkait.
+        </p>
+        <p class="creator-contact">
+          Elérhetőség:
+          <a
+            href="&#109;a&#105;l&#116;&#111;:&#97;&#100;&#97;&#109;&#64;&#112;&#111;&#114;&#107;&#111;&#108;&#97;&#98;&#46;&#104;&#117;"
+            >Ide írhatsz!</a
+          >
+        </p>
+        <p class="creator-contact">
+          Profiloldal:
+          <a href="https://www.adamporkolab.hu">www.adamporkolab.hu</a>
+        </p>
+        <p class="creator-contact">
+          GitHub:
+          <a href="https://github.com/APorkolab"
+            >https://github.com/APorkolab</a
+          >
+        </p>
+      </div>
+    </div>
 
-<body class="bg-light p-5">
-
-	<div class="container">
-		<h1 class="text-center mb-5">Tonetracker v.1.0.0</h1>
-		<div class="row mb-4">
-			<div class="col-md-6">
-				<div class="color-box p-5 border" id="randomColor"></div>
-			</div>
-			<div class="col-md-6">
-				<div class="color-box p-5 border" id="userColor"></div>
-			</div>
-		</div>
-		<div class="form-group">
-			<input type="text" class="form-control" id="colorInput" placeholder="Írd be a hex színkódot (pl. ff5733)">
-		</div>
-		<div class="form-group">
-			<button class="btn btn-primary">Ellenőriz</button>
-			<button class="btn btn-warning">Gép tippje</button>
-		</div>
-		<p id="feedback" class="text-danger"></p>
-		<div class="form-group">
-			<label for="colorAdjust">Szín módosítása:</label>
-			<input type="text" class="form-control" id="colorAdjust" placeholder="#000000">
-		</div>
-		<div class="form-group">
-			<label for="colorAdjust">Szín komponensek:</label>
-			<div class="input-group">
-				<button class="btn btn-secondary" id="minusRedButton">- R</button>
-				<button class="btn btn-secondary" id="plusRedButton">+ R</button>
-				<button class="btn btn-secondary" id="minusGreenButton">- G</button>
-				<button class="btn btn-secondary" id="plusGreenButton">+ G</button>
-				<button class="btn btn-secondary" id="minusBlueButton">- B</button>
-				<button class="btn btn-secondary" id="plusBlueButton">+ B</button>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="difficulty">Nehézségi szint:</label>
-			<select class="form-control" id="difficulty">
-				<option value="easy">Könnyű</option>
-				<option value="medium">Közepes</option>
-				<option value="hard">Nehéz</option>
-			</select>
-		</div>
-		<p>Idő: <span id="timer">0</span> másodperc</p>
-		<p>Pontok: <span id="score">0</span></p>
-		<button class="btn btn-success">Új játék</button>
-	</div>
-	<!-- Modal -->
-	<div class="modal" id="resultModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Eredmény</h5>
-					<button type="button" class="close-button js-modal-close">&times;</button>
-				</div>
-				<div class="modal-body">
-					A helyes színkód: <span id="correctColorCode"></span>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary js-modal-close">Bezár</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container mt-5">
-		<div class="creator-card text-center p-4">
-			<h2 class="creator-name">Dr. Porkoláb Ádám</h2>
-			<p class="creator-title">A digitális színek mestere</p>
-			<p class="creator-bio">
-				Amikor épp nem színkódokat tör be, akkor új módszereket talál ki a virtuális szivárványok hajszolására.
-				Következetesen a 'Hex-kódtörő' címért versenyez, és a billentyűzetével töri fel a színes világok titkait.
-			</p>
-			<p class="creator-contact">Elérhetőség: <a
-					href="&#109;a&#105;l&#116;&#111;:&#97;&#100;&#97;&#109;&#64;&#112;&#111;&#114;&#107;&#111;&#108;&#97;&#98;&#46;&#104;&#117;">Ide
-					írhatsz!</a></p>
-			<p class="creator-contact">Profiloldal: <a href="https://www.adamporkolab.hu">www.adamporkolab.hu</a></p>
-			<p class="creator-contact">GitHub: <a href="https://github.com/APorkolab">https://github.com/APorkolab</a></p>
-		</div>
-	</div>
-
-	<script type="module" src="/src/js/main.js"></script>
-</body>
-
+    <script type="module" src="/src/js/main.js"></script>
+  </body>
 </html>
