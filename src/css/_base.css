@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Általános stílusok */
+body {
+	background-color: var(--background-color);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+                      linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+                      linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+                      linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+    background-size: 20px 20px;
+	color: var(--dark-color);
+	font-family: 'Poppins', sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 800px;
+	background: rgba(30, 30, 30, 0.6); /* Semi-transparent background */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+	padding: 30px;
+	border-radius: var(--border-radius);
+	box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* Cím stílus */
+h1 {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: var(--dark-color);
+	text-transform: uppercase;
+	margin-bottom: 1rem;
+	position: relative;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+h1::after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 4px;
+	background-color: var(--primary-color);
+	margin: 10px auto 0;
+}
+
+/* Feedback szöveg */
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#feedback {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: var(--danger-color);
+}
+
+.feedback-animate {
+    animation: fadeInSlideUp 0.5s ease-in-out;
+}
+
+/* Reszponzív stílusok */
+@media (max-width: 768px) {
+	h1 {
+		font-size: 2rem;
+	}
+
+    .input-group {
+		flex-direction: column;
+	}
+}

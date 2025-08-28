@@ -1,0 +1,13 @@
+/* Alapszínek és változók */
+:root {
+	--primary-color: #3B82F6;   /* Modern Blue */
+	--secondary-color: #6B7280; /* Cool Gray */
+	--success-color: #10B981;   /* Emerald Green */
+	--warning-color: #F59E0B;   /* Amber */
+	--danger-color: #EF4444;    /* Red */
+	--light-color: #1E1E1E;    /* Surface Color */
+	--dark-color: #E5E7EB;     /* Text Color */
+	--background-color: #121212; /* Deep Dark Background */
+	--border-radius: 12px;      /* Slightly larger radius */
+	--transition-speed: 0.3s;
+}
