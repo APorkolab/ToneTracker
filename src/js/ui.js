@@ -128,19 +128,25 @@ export function resetUI() {
  */
 export function updateStatistics() {
   try {
-    const stats = storage.getGameStats();
+    // Get game statistics from storage
+    const gameHistory = storage.get('game_history', []);
     const highScores = storage.getHighScores();
+    
+    // Calculate statistics from game history
+    const totalGames = gameHistory.length;
+    const gamesWon = gameHistory.filter(game => game.won).length;
+    const totalAccuracy = gameHistory.reduce((sum, game) => sum + (game.accuracy || 0), 0);
     
     // Total games
     const totalGamesElement = document.getElementById('total-games');
     if (totalGamesElement) {
-      totalGamesElement.textContent = stats.totalGames.toString();
+      totalGamesElement.textContent = totalGames.toString();
     }
     
     // Win rate
     const winRateElement = document.getElementById('win-rate');
     if (winRateElement) {
-      const winRate = stats.totalGames > 0 ? (stats.gamesWon / stats.totalGames * 100) : 0;
+      const winRate = totalGames > 0 ? (gamesWon / totalGames * 100) : 0;
       winRateElement.textContent = `${Math.round(winRate)}%`;
     }
     
@@ -154,20 +160,32 @@ export function updateStatistics() {
     // Average accuracy
     const avgAccuracyElement = document.getElementById('avg-accuracy');
     if (avgAccuracyElement) {
-      const avgAccuracy = stats.totalGames > 0 ? 
-        stats.totalAccuracy / stats.totalGames : 0;
+      const avgAccuracy = totalGames > 0 ? totalAccuracy / totalGames : 0;
       avgAccuracyElement.textContent = `${Math.round(avgAccuracy)}%`;
     }
     
     console.log('📈 Statistics updated:', {
-      totalGames: stats.totalGames,
-      winRate: `${Math.round((stats.gamesWon / stats.totalGames * 100) || 0)}%`,
+      totalGames,
+      winRate: `${Math.round((gamesWon / totalGames * 100) || 0)}%`,
       bestScore: highScores.length > 0 ? highScores[0].score : 0,
-      avgAccuracy: `${Math.round((stats.totalAccuracy / stats.totalGames) || 0)}%`
+      avgAccuracy: `${Math.round((totalAccuracy / totalGames) || 0)}%`
     });
     
   } catch (error) {
     console.error('❌ Failed to update statistics:', error);
+    
+    // Set default values on error
+    const elements = {
+      'total-games': '0',
+      'win-rate': '0%',
+      'best-score': '0',
+      'avg-accuracy': '0%'
+    };
+    
+    Object.entries(elements).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    });
   }
 }
 

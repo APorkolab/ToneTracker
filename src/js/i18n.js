@@ -246,6 +246,19 @@ export class I18n {
   }
   
   /**
+   * Initialize i18n with given or detected locale
+   * @param {string} locale - Optional locale to set
+   */
+  async initialize(locale) {
+    if (locale && this.isLocaleSupported(locale)) {
+      this.setLocale(locale);
+    } else {
+      this.setLocale(this.detectLocale());
+    }
+    return Promise.resolve();
+  }
+  
+  /**
    * Detect user's preferred locale
    * @private
    * @returns {string} Detected locale
@@ -322,6 +335,13 @@ export class I18n {
    */
   getCurrentLocale() {
     return this.currentLocale;
+  }
+  
+  /**
+   * Alias for getCurrentLocale for compatibility
+   */
+  getCurrentLanguage() {
+    return this.getCurrentLocale();
   }
   
   /**
@@ -445,16 +465,31 @@ export class I18n {
    * Create a language switcher
    * @param {HTMLElement} container - Container element for language switcher
    */
-  createLanguageSwitcher(container) {
+  /**
+   * Create a language switcher element
+   * If a function is passed, it will be used as onChange callback and the element will be returned.
+   * If a DOM element is passed, the switcher will be appended to it.
+   * @param {Function|HTMLElement} target - onChange callback or container element
+   * @returns {HTMLElement} The created switcher element
+   */
+  createLanguageSwitcher(target) {
+    const container = document.createElement('div');
+    container.className = 'language-switcher d-flex align-items-center';
+
+    const label = document.createElement('label');
+    label.textContent = this.t('language') || 'Language';
+    label.htmlFor = 'language-switcher';
+    label.style.marginRight = '8px';
+
     const select = document.createElement('select');
     select.id = 'language-switcher';
-    select.setAttribute('aria-label', this.t('languageSelector'));
-    
+    select.setAttribute('aria-label', this.t('languageSelector') || 'Language selector');
+
     const localeNames = {
       hu: 'Magyar',
       en: 'English'
     };
-    
+
     this.getAvailableLocales().forEach(locale => {
       const option = document.createElement('option');
       option.value = locale;
@@ -462,23 +497,28 @@ export class I18n {
       option.selected = locale === this.currentLocale;
       select.appendChild(option);
     });
-    
+
     select.addEventListener('change', (event) => {
+      const prev = this.currentLocale;
       this.setLocale(event.target.value);
+      if (typeof target === 'function') {
+        target(event.target.value, prev);
+      }
     });
-    
-    const label = document.createElement('label');
-    label.textContent = this.t('language') || 'Language';
-    label.htmlFor = 'language-switcher';
-    
+
     container.appendChild(label);
     container.appendChild(select);
-    
+
     // Update on locale change
     window.addEventListener('localeChanged', () => {
       label.textContent = this.t('language') || 'Language';
-      select.setAttribute('aria-label', this.t('languageSelector'));
+      select.setAttribute('aria-label', this.t('languageSelector') || 'Language selector');
     });
+
+    if (target && target instanceof HTMLElement) {
+      target.appendChild(container);
+    }
+    return container;
   }
   
   /**

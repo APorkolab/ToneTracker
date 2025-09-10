@@ -1,0 +1,175 @@
+name: 🚀 ToneTracker CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Quality Checks
+  quality:
+    runs-on: ubuntu-latest
+    name: 🔍 Code Quality & Testing
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 📚 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Run ESLint
+      run: npm run lint
+      
+    - name: 🎨 Check code formatting
+      run: npm run format -- --check
+      
+    - name: 🧪 Run unit tests
+      run: npm run test:run
+      
+    - name: 📊 Generate test coverage
+      run: npm run test:coverage
+      
+    - name: 📈 Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        
+    - name: 🔒 Security audit
+      run: npm audit --omit=dev
+      continue-on-error: true
+
+  # Performance & E2E Tests
+  e2e:
+    runs-on: ubuntu-latest
+    name: 🎭 E2E & Performance Tests
+    needs: quality
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 📚 Install dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build application
+      run: npm run build
+      
+    - name: 🎭 Install Playwright
+      run: npm run e2e:install
+      
+    - name: 🧪 Run E2E tests
+      run: npm run e2e
+      
+    - name: 📱 Upload E2E artifacts
+      uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 7
+
+  # Build & Deploy
+  deploy:
+    runs-on: ubuntu-latest
+    name: 🚀 Build & Deploy
+    needs: [quality, e2e]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 📚 Install dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build for production
+      run: npm run build
+      env:
+        NODE_ENV: production
+        
+    - name: 📊 Analyze bundle size
+      run: |
+        npx bundlesize
+        echo "## Bundle Size Analysis 📦" >> $GITHUB_STEP_SUMMARY
+        du -sh dist/* >> $GITHUB_STEP_SUMMARY
+      continue-on-error: true
+      
+    - name: 🔍 Run Lighthouse audit
+      run: |
+        npm run serve &
+        sleep 5
+        npm run performance:audit
+        pkill -f "python3 -m http.server"
+      continue-on-error: true
+      
+    - name: 📱 Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        cname: tonetracker.app # Optional: custom domain
+        
+    - name: 📈 Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path: dist/
+        retention-days: 30
+        
+    - name: 📊 Upload Lighthouse report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: lighthouse-report
+        path: lighthouse-report.html
+        retention-days: 7
+
+  # Notify deployment status
+  notify:
+    runs-on: ubuntu-latest
+    name: 📢 Deployment Notification
+    needs: [deploy]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 🎉 Success notification
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "## ✅ Deployment Successful! 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "ToneTracker has been successfully deployed to production." >> $GITHUB_STEP_SUMMARY
+        echo "### 🌐 Live URL: https://tonetracker.app" >> $GITHUB_STEP_SUMMARY
+        
+    - name: ❌ Failure notification
+      if: needs.deploy.result == 'failure'
+      run: |
+        echo "## ❌ Deployment Failed 💥" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the deployment logs and fix any issues." >> $GITHUB_STEP_SUMMARY
+
+# Performance budgets
+bundlesize:
+  - path: "dist/assets/*.js"
+    maxSize: "250kb"
+    compression: gzip
+  - path: "dist/assets/*.css"
+    maxSize: "50kb"
+    compression: gzip

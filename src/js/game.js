@@ -183,7 +183,7 @@ function endGame(isCorrect) {
   ui.updateStatistics();
   
   // Show achievement notifications for milestones
-  checkAndShowAchievements(isCorrect, finalScore, stats);
+  checkAndShowAchievements(isCorrect, finalScore);
   
   // Show result notification
   if (isCorrect) {

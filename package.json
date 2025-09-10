@@ -17,7 +17,13 @@
     "test:watch": "vitest --watch",
     "e2e:install": "npx playwright install",
     "e2e": "npx playwright test",
-    "e2e:ui": "npx playwright test --ui"
+    "e2e:ui": "npx playwright test --ui",
+    "serve": "python3 -m http.server 8080 --directory .",
+    "analyze": "npx vite-bundle-analyzer dist",
+    "performance:audit": "npx lighthouse http://localhost:8080 --output=html --output-path=./lighthouse-report.html",
+    "pwa:validate": "npx pwa-asset-generator src/assets/logo.svg assets/icons --background '#4f46e5' --index ./index.html",
+    "security:audit": "npm audit",
+    "size:check": "npx bundlesize"
   },
   "keywords": [
     "color",

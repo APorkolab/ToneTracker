@@ -5,6 +5,7 @@ import {
   updateUserColor,
   updateComponentButtonsState,
   hideModal,
+  updateStatistics,
 } from './ui.js';
 import { isValidHexColor } from './colorUtils.js';
 import { setDifficulty } from './state.js';
@@ -143,16 +144,19 @@ async function initializeI18nAndPreferences() {
     // Create language switcher if container exists
     const langContainer = document.getElementById('language-switcher-container');
     if (langContainer) {
-      const switcher = i18n.createLanguageSwitcher((newLang) => {
+      const switcher = i18n.createLanguageSwitcher((newLang, oldLang) => {
         // Update user preferences when language changes
         const prefs = storage.getUserPreferences();
         prefs.language = newLang;
-        storage.setUserPreferences(prefs);
+        storage.updateUserPreferences({ language: newLang });
         
         trackEvent(EVENT_TYPES.LANGUAGE_CHANGE, {
-          oldLanguage: i18n.getCurrentLanguage(),
+          oldLanguage: oldLang,
           newLanguage: newLang
         });
+        
+        // Refresh UI texts
+        updateUIWithTranslations();
       });
       langContainer.appendChild(switcher);
     }
@@ -243,7 +247,7 @@ function initializeAnalytics() {
         <div style="position: fixed; bottom: 0; left: 0; right: 0; background: #f8f9fa; padding: 16px; border-top: 1px solid #dee2e6; z-index: 1000;">
           <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: between; gap: 16px;">
             <div style="flex: 1;">
-              <p style="margin: 0; font-size: 14px;">🍪 ${i18n.t('privacy.analyticsConsent', 'We use analytics to improve your experience. No personal data is collected.')}</p>
+              <p style="margin: 0; font-size: 14px;">🍪 ${i18n.t('privacy.analyticsConsent') || 'We use analytics to improve your experience. No personal data is collected.'}</p>
             </div>
             <div style="display: flex; gap: 8px;">
               <button id="accept-analytics" class="btn btn-primary btn-sm">Accept</button>
@@ -308,7 +312,7 @@ async function initializeApp() {
     console.log('✅ App initialization complete');
     
     // Load and display initial statistics
-    ui.updateStatistics();
+    updateStatistics();
     
     // Start the first game automatically
     startGame();
