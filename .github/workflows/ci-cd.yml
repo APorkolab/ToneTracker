@@ -90,6 +90,8 @@ jobs:
     name: 🚀 Build & Deploy
     needs: [quality, e2e]
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
     
     steps:
     - name: 📥 Checkout code
