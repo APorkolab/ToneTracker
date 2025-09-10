@@ -1,5 +1,7 @@
 import { DOM, STRINGS } from './constants.js';
 import { state } from './state.js';
+import { storage } from './storage.js';
+import { i18n } from './i18n.js';
 
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600);
@@ -119,4 +121,258 @@ export function resetUI() {
   DOM.feedback.textContent = '';
   DOM.timer.textContent = '0';
   updateScore();
+}
+
+/**
+ * Update statistics display with latest game data
+ */
+export function updateStatistics() {
+  try {
+    const stats = storage.getGameStats();
+    const highScores = storage.getHighScores();
+    
+    // Total games
+    const totalGamesElement = document.getElementById('total-games');
+    if (totalGamesElement) {
+      totalGamesElement.textContent = stats.totalGames.toString();
+    }
+    
+    // Win rate
+    const winRateElement = document.getElementById('win-rate');
+    if (winRateElement) {
+      const winRate = stats.totalGames > 0 ? (stats.gamesWon / stats.totalGames * 100) : 0;
+      winRateElement.textContent = `${Math.round(winRate)}%`;
+    }
+    
+    // Best score
+    const bestScoreElement = document.getElementById('best-score');
+    if (bestScoreElement) {
+      const bestScore = highScores.length > 0 ? highScores[0].score : 0;
+      bestScoreElement.textContent = bestScore.toString();
+    }
+    
+    // Average accuracy
+    const avgAccuracyElement = document.getElementById('avg-accuracy');
+    if (avgAccuracyElement) {
+      const avgAccuracy = stats.totalGames > 0 ? 
+        stats.totalAccuracy / stats.totalGames : 0;
+      avgAccuracyElement.textContent = `${Math.round(avgAccuracy)}%`;
+    }
+    
+    console.log('📈 Statistics updated:', {
+      totalGames: stats.totalGames,
+      winRate: `${Math.round((stats.gamesWon / stats.totalGames * 100) || 0)}%`,
+      bestScore: highScores.length > 0 ? highScores[0].score : 0,
+      avgAccuracy: `${Math.round((stats.totalAccuracy / stats.totalGames) || 0)}%`
+    });
+    
+  } catch (error) {
+    console.error('❌ Failed to update statistics:', error);
+  }
+}
+
+/**
+ * Create and show a toast notification
+ * @param {string} message - Message to display
+ * @param {string} type - Type of toast (success, warning, error, info)
+ * @param {number} duration - Display duration in milliseconds
+ */
+export function showToast(message, type = 'info', duration = 3000) {
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  
+  const icons = {
+    success: '✅',
+    warning: '⚠️',
+    error: '❌',
+    info: 'ℹ️'
+  };
+  
+  toast.innerHTML = `
+    <div class="toast-content">
+      <span class="toast-icon">${icons[type] || icons.info}</span>
+      <span class="toast-message">${message}</span>
+    </div>
+  `;
+  
+  // Add styles
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${getToastColor(type)};
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    max-width: 300px;
+    animation: slideInRight 0.3s ease-out;
+    font-weight: 500;
+  `;
+  
+  // Add animation styles if not already added
+  if (!document.querySelector('#toast-styles')) {
+    const style = document.createElement('style');
+    style.id = 'toast-styles';
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      
+      @keyframes slideOutRight {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+      
+      .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .toast-icon {
+        font-size: 16px;
+      }
+      
+      .toast-message {
+        font-size: 14px;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(toast);
+  
+  // Auto remove after duration
+  setTimeout(() => {
+    toast.style.animation = 'slideOutRight 0.3s ease-in';
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.remove();
+      }
+    }, 300);
+  }, duration);
+}
+
+/**
+ * Get toast background color based on type
+ * @private
+ */
+function getToastColor(type) {
+  const colors = {
+    success: '#28a745',
+    warning: '#ffc107',
+    error: '#dc3545',
+    info: '#17a2b8'
+  };
+  return colors[type] || colors.info;
+}
+
+/**
+ * Show achievement notification
+ * @param {string} achievement - Achievement name
+ * @param {string} description - Achievement description
+ */
+export function showAchievement(achievement, description) {
+  const achievementEl = document.createElement('div');
+  achievementEl.className = 'achievement-notification';
+  
+  achievementEl.innerHTML = `
+    <div class="achievement-content">
+      <div class="achievement-icon">🏆</div>
+      <div class="achievement-text">
+        <div class="achievement-title">Achievement Unlocked!</div>
+        <div class="achievement-name">${achievement}</div>
+        <div class="achievement-desc">${description}</div>
+      </div>
+    </div>
+  `;
+  
+  achievementEl.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ffd700, #ffed4a);
+    color: #333;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    max-width: 400px;
+    text-align: center;
+    animation: achievementPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  `;
+  
+  // Add animation styles
+  if (!document.querySelector('#achievement-styles')) {
+    const style = document.createElement('style');
+    style.id = 'achievement-styles';
+    style.textContent = `
+      @keyframes achievementPop {
+        0% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+      
+      .achievement-content {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      
+      .achievement-icon {
+        font-size: 48px;
+      }
+      
+      .achievement-title {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      
+      .achievement-name {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 4px;
+      }
+      
+      .achievement-desc {
+        font-size: 12px;
+        opacity: 0.8;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  document.body.appendChild(achievementEl);
+  
+  // Auto remove after 4 seconds
+  setTimeout(() => {
+    achievementEl.style.animation = 'achievementPop 0.3s reverse';
+    setTimeout(() => {
+      if (achievementEl.parentElement) {
+        achievementEl.remove();
+      }
+    }, 300);
+  }, 4000);
 }

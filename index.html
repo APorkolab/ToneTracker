@@ -67,6 +67,47 @@
     <link rel="stylesheet" href="/src/css/style.css">
     <link rel="stylesheet" href="/src/css/_accessibility.css">
     
+    <!-- Statistics styling -->
+    <style>
+      .stats-summary {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+      }
+      
+      .stats-summary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .stat-item {
+        padding: 8px;
+      }
+      
+      .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 4px;
+      }
+      
+      .stat-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 500;
+      }
+      
+      @media (max-width: 768px) {
+        .stat-number {
+          font-size: 1.25rem;
+        }
+        
+        .stat-label {
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+    
     <!-- Preload critical resources -->
     <link rel="modulepreload" href="/src/js/main.js">
     <link rel="modulepreload" href="/src/js/colorUtils.js">
@@ -101,7 +142,10 @@
     </a>
     <div class="container">
       <header>
-        <h1 class="text-center mb-5" id="main-title">Tonetracker v.2.0.0</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="text-center flex-grow-1" id="main-title">ToneTracker v.2.0.0</h1>
+          <div id="language-switcher-container" class="ml-3" aria-label="Nyelvválasztó"></div>
+        </div>
         <p class="text-center mb-4 sr-only" id="game-description">
           Színfelismerő játék: memorizálj egy színt, majd próbáld meg reprodukálni hex kódok vagy RGB értékek segítségével.
         </p>
@@ -257,6 +301,37 @@
       <div class="game-stats" role="group" aria-label="Játék statisztikák">
         <p>Idő: <span id="timer" aria-label="Eltelt idő">0</span> másodperc</p>
         <p>Pontok: <span id="score" aria-label="Jelenlegi pontok">0</span></p>
+      </div>
+      
+      <!-- Statistics Summary -->
+      <div class="stats-summary mt-4 p-3 bg-light rounded" role="region" aria-label="Összesítő statisztikák">
+        <h3 class="h5 mb-3">📈 Statisztikák</h3>
+        <div class="row">
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="total-games">0</div>
+              <div class="stat-label">Játékok</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="win-rate">0%</div>
+              <div class="stat-label">Nyerési arány</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="best-score">0</div>
+              <div class="stat-label">Legjobb pont</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="avg-accuracy">0%</div>
+              <div class="stat-label">Átlag pontosság</div>
+            </div>
+          </div>
+        </div>
       </div>
       
       <button 

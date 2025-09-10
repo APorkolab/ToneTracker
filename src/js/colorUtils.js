@@ -164,3 +164,25 @@ export function generateCloseColor(generatedColor) {
 
   return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
 }
+
+/**
+ * Calculate color difference using Delta E (CIE76)
+ * @param {string} color1 - First hex color
+ * @param {string} color2 - Second hex color  
+ * @returns {number} Delta E value (0 = identical, higher = more different)
+ * @throws {Error} When color formats are invalid
+ */
+export function calculateColorDifference(color1, color2) {
+  try {
+    const rgb1 = hexToRgb(color1);
+    const rgb2 = hexToRgb(color2);
+    
+    const lab1 = rgbToLab(rgb1);
+    const lab2 = rgbToLab(rgb2);
+    
+    return deltaE76(lab1, lab2);
+  } catch (error) {
+    console.error('Color difference calculation failed:', error);
+    return 100; // Return high difference on error
+  }
+}

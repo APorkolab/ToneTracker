@@ -2,6 +2,9 @@ import { state, resetState, setDifficulty } from './state.js';
 import * as ui from './ui.js';
 import * as colorUtils from './colorUtils.js';
 import { DOM, STRINGS, DIFFICULTIES } from './constants.js';
+import { analytics, trackGameStart, trackGameEnd, trackEvent, EVENT_TYPES } from './analytics.js';
+import { storage } from './storage.js';
+import { startTiming, endTiming } from './performance.js';
 
 function startTimer() {
   if (state.timerInterval) {
@@ -17,18 +20,184 @@ function calculateScore() {
   state.score += newScore;
 }
 
+function calculateAccuracy() {
+  if (!state.generatedColor || !DOM.colorInput.value) return 0;
+  
+  const userColor = '#' + DOM.colorInput.value.replace('#', '');
+  const targetColor = state.generatedColor;
+  
+  // Calculate color difference using Delta E approximation
+  const deltaE = colorUtils.calculateColorDifference(userColor, targetColor);
+  
+  // Convert Delta E to accuracy percentage (0-100)
+  // Perfect match (deltaE = 0) = 100%, deltaE > 100 = 0%
+  const accuracy = Math.max(0, Math.min(100, 100 - (deltaE / 100) * 100));
+  
+  return Math.round(accuracy * 100) / 100; // Round to 2 decimal places
+}
+
+/**
+ * Check for and show achievement notifications
+ * @param {boolean} won - Whether the game was won
+ * @param {number} score - Final score
+ * @param {Object} stats - Current game statistics
+ */
+function checkAndShowAchievements(won, score, stats) {
+  if (!won) return;
+  
+  try {
+    const gameStats = storage.getGameStats();
+    const highScores = storage.getHighScores();
+    
+    // First win achievement
+    if (gameStats.gamesWon === 1) {
+      ui.showAchievement(
+        'First Victory',
+        'Congratulations on your first successful color match!'
+      );
+    }
+    
+    // Multiple wins milestones
+    const winMilestones = [5, 10, 25, 50, 100];
+    if (winMilestones.includes(gameStats.gamesWon)) {
+      ui.showAchievement(
+        `${gameStats.gamesWon} Wins`,
+        `You've successfully completed ${gameStats.gamesWon} games!`
+      );
+    }
+    
+    // High score achievement
+    if (highScores.length > 0 && score === highScores[0].score) {
+      ui.showAchievement(
+        'New High Score!',
+        `Amazing! You scored ${score} points!`
+      );
+    }
+    
+    // Perfect accuracy achievement
+    const accuracy = calculateAccuracy();
+    if (accuracy === 100) {
+      ui.showAchievement(
+        'Perfect Match',
+        'Incredible! You got the exact color!'
+      );
+    }
+    
+    // Speed achievement (won in less than 10 seconds)
+    const gameDuration = Date.now() - state.startTime;
+    if (gameDuration < 10000) {
+      ui.showAchievement(
+        'Lightning Fast',
+        'You completed the game in under 10 seconds!'
+      );
+    }
+    
+    // Difficulty-based achievements
+    if (state.difficulty === 'hard') {
+      ui.showAchievement(
+        'Hard Mode Master',
+        'Excellent work completing hard difficulty!'
+      );
+    }
+    
+  } catch (error) {
+    console.error('❌ Failed to check achievements:', error);
+  }
+}
+
 function endGame(isCorrect) {
   clearInterval(state.timerInterval);
   state.isGameActive = false;
-
+  
+  // Calculate game metrics
+  const gameDuration = Date.now() - state.startTime;
+  const difficulty = state.difficulty;
+  const accuracy = calculateAccuracy();
+  const finalScore = isCorrect ? state.score : 0;
+  
   if (isCorrect) {
     ui.updateFeedback(STRINGS.congratulations);
     ui.playSound('correct');
     calculateScore();
     ui.updateScore();
+    
+    // Track successful game completion
+    trackGameEnd(true, state.score, gameDuration, difficulty, accuracy);
+    
+    // Record game statistics
+    storage.recordGame({
+      won: true,
+      score: state.score,
+      time: gameDuration,
+      difficulty: difficulty,
+      accuracy: accuracy,
+      targetColor: state.generatedColor,
+      attempts: DIFFICULTIES[difficulty].tips - state.tipCount + 1,
+      computerTipsUsed: DIFFICULTIES[difficulty].tips - state.computerTipCount,
+      timestamp: Date.now()
+    });
+    
+    console.log('🎉 Game won!', {
+      score: state.score,
+      time: `${Math.round(gameDuration / 1000)}s`,
+      accuracy: `${accuracy}%`,
+      difficulty
+    });
+    
   } else {
     ui.updateFeedback(STRINGS.sorry);
     ui.playSound('wrong');
+    
+    // Track failed game completion
+    trackGameEnd(false, 0, gameDuration, difficulty, accuracy);
+    
+    // Record failed game
+    storage.recordGame({
+      won: false,
+      score: 0,
+      time: gameDuration,
+      difficulty: difficulty,
+      accuracy: accuracy,
+      targetColor: state.generatedColor,
+      attempts: DIFFICULTIES[difficulty].tips + 1,
+      computerTipsUsed: DIFFICULTIES[difficulty].tips - state.computerTipCount,
+      timestamp: Date.now()
+    });
+    
+    console.log('💔 Game lost', {
+      time: `${Math.round(gameDuration / 1000)}s`,
+      accuracy: `${accuracy}%`,
+      difficulty,
+      targetColor: state.generatedColor
+    });
+  }
+  
+  // End performance timing
+  endTiming('game-session', {
+    won: isCorrect,
+    difficulty: difficulty,
+    score: finalScore
+  });
+  
+  // Update statistics display
+  ui.updateStatistics();
+  
+  // Show achievement notifications for milestones
+  checkAndShowAchievements(isCorrect, finalScore, stats);
+  
+  // Show result notification
+  if (isCorrect) {
+    ui.showToast(
+      `🎉 Congratulations! Score: ${finalScore}`,
+      'success',
+      4000
+    );
+  } else {
+    ui.showToast(
+      `😔 Better luck next time! Target was ${state.generatedColor}`,
+      'warning',
+      4000
+    );
   }
 
   ui.showResultModal();
@@ -39,10 +208,25 @@ export function checkColor() {
   if (!state.isGameActive) return;
 
   const userColor = '#' + DOM.colorInput.value.replace('#', '');
-  if (userColor.toUpperCase() === state.generatedColor) {
+  const isCorrect = userColor.toUpperCase() === state.generatedColor;
+  const accuracy = calculateAccuracy();
+  
+  // Track color guess attempt
+  analytics.trackColorGuess(userColor, state.generatedColor, accuracy, isCorrect);
+  
+  if (isCorrect) {
     endGame(true);
   } else {
     state.tipCount--;
+    
+    trackEvent(EVENT_TYPES.COLOR_GUESS, {
+      attempt: DIFFICULTIES[state.difficulty].tips - state.tipCount,
+      totalAttempts: DIFFICULTIES[state.difficulty].tips,
+      accuracy: accuracy,
+      remainingTips: state.tipCount,
+      difficulty: state.difficulty
+    });
+    
     if (state.tipCount > 0) {
       let feedbackMessage = STRINGS.tryAgain(state.tipCount);
       feedbackMessage += colorUtils.compareColors(
@@ -50,6 +234,8 @@ export function checkColor() {
         state.generatedColor
       );
       ui.updateFeedback(feedbackMessage);
+      
+      console.log(`🎯 Color guess: ${accuracy}% accuracy, ${state.tipCount} tips remaining`);
     } else {
       endGame(false);
     }
@@ -119,6 +305,10 @@ export function startGame() {
   ui.updateRandomColor(state.generatedColor, STRINGS.memorizeColor);
   ui.setPulseAnimation(true);
   ui.disableGameControls();
+
+  // Track game start
+  trackGameStart(state.difficulty, state.generatedColor);
+  startTiming('game-session');
 
   setTimeout(() => {
     ui.updateRandomColor('#FFFFFF', '');
