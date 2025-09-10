@@ -1,9 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('ToneTracker Basic Functionality', () => {
+  // Helper function to handle analytics consent
+  async function handleAnalyticsConsent(page) {
+    // Check if consent banner exists and handle it
+    const acceptButton = page.locator('#accept-analytics');
+    if (await acceptButton.isVisible({ timeout: 2000 })) {
+      await acceptButton.click();
+      // Wait for banner to disappear
+      await acceptButton.waitFor({ state: 'detached', timeout: 5000 });
+    }
+  }
+  
   test('should load the application successfully', async ({ page }) => {
     // Navigate to the application
     await page.goto('/');
+    
+    // Handle analytics consent if present
+    await handleAnalyticsConsent(page);
     
     // Check that the main title is visible
     await expect(page.locator('h1')).toContainText('ToneTracker');
@@ -14,13 +28,14 @@ test.describe('ToneTracker Basic Functionality', () => {
     await expect(page.locator('#colorInput')).toBeVisible();
     
     // Check that game control buttons are present
-    await expect(page.locator('.btn-success')).toBeVisible(); // New Game button
-    await expect(page.locator('.btn-primary')).toBeVisible(); // Check button
-    await expect(page.locator('.btn-warning')).toBeVisible(); // Computer Tip button
+    await expect(page.locator('#new-game-button')).toBeVisible(); // New Game button
+    await expect(page.locator('#check-button')).toBeVisible(); // Check button
+    await expect(page.locator('#computer-tip-button')).toBeVisible(); // Computer Tip button
   });
 
   test('should accept hex color input', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Enter a valid hex color
     const hexInput = page.locator('#colorInput');
@@ -33,6 +48,7 @@ test.describe('ToneTracker Basic Functionality', () => {
 
   test('should change difficulty level', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Find the difficulty selector
     const difficultySelect = page.locator('#difficulty');
@@ -50,6 +66,7 @@ test.describe('ToneTracker Basic Functionality', () => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Check that essential elements are still visible
     await expect(page.locator('h1')).toBeVisible();
@@ -60,6 +77,7 @@ test.describe('ToneTracker Basic Functionality', () => {
 
   test('should have proper accessibility attributes', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Check ARIA labels and roles
     await expect(page.locator('#randomColor')).toHaveAttribute('role', 'img');
@@ -74,6 +92,7 @@ test.describe('ToneTracker Basic Functionality', () => {
 
   test('should handle keyboard navigation', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Check that color input can be focused and typed into
     await page.locator('#colorInput').focus();
@@ -85,6 +104,7 @@ test.describe('ToneTracker Basic Functionality', () => {
 
   test('should have statistics display', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Check that statistics elements are present
     await expect(page.locator('#total-games')).toBeVisible();

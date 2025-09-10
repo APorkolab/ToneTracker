@@ -22,6 +22,7 @@
     "serve": "python3 -m http.server 8080 --directory dist",
     "analyze": "npx vite-bundle-analyzer dist",
     "performance:audit": "npx lighthouse http://localhost:8080 --output=html --output-path=./lighthouse-report.html",
+    "performance:audit:ci": "npx lighthouse http://localhost:8080 --chrome-flags=\"--headless --no-sandbox --disable-gpu --disable-dev-shm-usage --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-renderer-backgrounding\" --output=html --output-path=./lighthouse-report.html",
     "pwa:validate": "npx pwa-asset-generator src/assets/logo.svg assets/icons --background '#4f46e5' --index ./index.html",
     "security:audit": "npm audit",
     "size:check": "npx bundlesize"

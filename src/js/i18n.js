@@ -288,7 +288,7 @@ export class I18n {
    * @returns {boolean} Whether locale is supported
    */
   isLocaleSupported(locale) {
-    return locale in this.translations;
+    return locale && this.translations && typeof this.translations === 'object' && locale in this.translations;
   }
   
   /**
@@ -411,7 +411,7 @@ export class I18n {
    * @returns {string} Interpolated string
    */
   interpolate(template, params) {
-    return template.replace(/\\{\\{(\\w+)\\}\\}/g, (match, key) => {
+    return template.replace(/\{\{(\w+)\}\}/g, (match, key) => {
       return Object.prototype.hasOwnProperty.call(params, key) ? String(params[key]) : match;
     });
   }

@@ -1,11 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('ToneTracker Performance', () => {
+  // Helper function to handle analytics consent
+  async function handleAnalyticsConsent(page) {
+    // Check if consent banner exists and handle it
+    const acceptButton = page.locator('#accept-analytics');
+    if (await acceptButton.isVisible({ timeout: 2000 })) {
+      await acceptButton.click();
+      // Wait for banner to disappear
+      await acceptButton.waitFor({ state: 'detached', timeout: 5000 });
+    }
+  }
+  
   test('should load within acceptable time limits', async ({ page }) => {
     const startTime = Date.now();
     
     // Navigate to the application
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Wait for the main title to be visible (indicating page is loaded)
     await expect(page.locator('h1')).toBeVisible();
@@ -20,6 +32,7 @@ test.describe('ToneTracker Performance', () => {
   test('should have good Core Web Vitals', async ({ page }) => {
     // Navigate to the application
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     
     // Wait for the page to fully load
     await expect(page.locator('h1')).toBeVisible();
@@ -60,12 +73,13 @@ test.describe('ToneTracker Performance', () => {
 
   test('should handle user interactions without issues', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     await expect(page.locator('h1')).toBeVisible();
     
     // Perform basic interactions
     for (let i = 0; i < 3; i++) {
       // Click new game button
-      await page.click('.btn-success');
+      await page.click('#new-game-button');
       await page.waitForTimeout(100);
       
       // Enter color quickly
@@ -73,7 +87,7 @@ test.describe('ToneTracker Performance', () => {
       await page.waitForTimeout(50);
       
       // Check color
-      await page.click('.btn-primary');
+      await page.click('#check-button');
       await page.waitForTimeout(100);
     }
     
@@ -84,6 +98,7 @@ test.describe('ToneTracker Performance', () => {
 
   test('should maintain performance with difficulty changes', async ({ page }) => {
     await page.goto('/');
+    await handleAnalyticsConsent(page);
     await expect(page.locator('h1')).toBeVisible();
     
     const difficulties = ['easy', 'medium', 'hard'];
