@@ -23,7 +23,7 @@ jobs:
         cache: 'npm'
         
     - name: 📚 Install dependencies
-      run: npm i
+      run: npm ci
       
     - name: 🔍 Run ESLint
       run: npm run lint
@@ -38,9 +38,11 @@ jobs:
       run: npm run test:coverage
       
     - name: 📈 Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
+      continue-on-error: true
       with:
         file: ./coverage/lcov.info
+        token: ${{ secrets.CODECOV_TOKEN }}
         
     - name: 🔒 Security audit
       run: npm audit --omit=dev
@@ -63,7 +65,7 @@ jobs:
         cache: 'npm'
         
     - name: 📚 Install dependencies
-      run: npm i
+      run: npm ci
       
     - name: 🏗️ Build application
       run: npm run build
@@ -75,7 +77,7 @@ jobs:
       run: npm run e2e
       
     - name: 📱 Upload E2E artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: playwright-report
@@ -100,7 +102,7 @@ jobs:
         cache: 'npm'
         
     - name: 📚 Install dependencies
-      run: npm i
+      run: npm ci
       
     - name: 🏗️ Build for production
       run: npm run build
@@ -149,14 +151,14 @@ jobs:
         allow_empty_commit: false
         
     - name: 📈 Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: dist/
         retention-days: 30
         
     - name: 📊 Upload Lighthouse report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: lighthouse-report
