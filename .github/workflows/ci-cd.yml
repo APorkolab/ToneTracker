@@ -131,9 +131,11 @@ jobs:
         
     - name: 📊 Analyze bundle size
       run: |
-        npx bundlesize
         echo "## Bundle Size Analysis 📦" >> $GITHUB_STEP_SUMMARY
         du -sh dist/* >> $GITHUB_STEP_SUMMARY
+        echo "### Gzipped sizes:" >> $GITHUB_STEP_SUMMARY
+        gzip -c dist/assets/features-*.js | wc -c | xargs -I {} echo "Features bundle: {} bytes" >> $GITHUB_STEP_SUMMARY
+        gzip -c dist/assets/index-*.css | wc -c | xargs -I {} echo "CSS bundle: {} bytes" >> $GITHUB_STEP_SUMMARY
       continue-on-error: true
       
     - name: 🔍 Run Lighthouse audit
