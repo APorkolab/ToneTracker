@@ -1,11 +1,33 @@
+/**
+ * Converts a hexadecimal color string to RGB values
+ * @param {string} hex - Hexadecimal color string (with or without #)
+ * @returns {{r: number, g: number, b: number}} RGB color object
+ * @throws {Error} When hex color is invalid
+ */
 function hexToRgb(hex) {
-  const bigint = parseInt(hex.replace('#', ''), 16);
+  if (!hex || typeof hex !== 'string') {
+    throw new Error('Invalid hex color: must be a non-empty string');
+  }
+  
+  const cleanHex = hex.replace('#', '');
+  if (!/^[0-9A-Fa-f]{6}$/.test(cleanHex)) {
+    throw new Error(`Invalid hex color format: ${hex}`);
+  }
+  
+  const bigint = parseInt(cleanHex, 16);
   const r = (bigint >> 16) & 255;
   const g = (bigint >> 8) & 255;
   const b = bigint & 255;
   return { r, g, b };
 }
 
+/**
+ * Converts RGB color values to XYZ color space
+ * @param {number} r - Red component (0-255)
+ * @param {number} g - Green component (0-255)
+ * @param {number} b - Blue component (0-255)
+ * @returns {{x: number, y: number, z: number}} XYZ color object
+ */
 function rgbToXyz(r, g, b) {
   r /= 255;
   g /= 255;
@@ -55,25 +77,37 @@ function deltaE76(lab1, lab2) {
   );
 }
 
+/**
+ * Compares two hex colors and returns feedback with similarity percentage
+ * @param {string} userColor - User's guessed color in hex format
+ * @param {string} correctColor - The correct color in hex format
+ * @returns {string} Feedback message with percentage similarity
+ * @throws {Error} When color formats are invalid
+ */
 export function compareColors(userColor, correctColor) {
-  const userLab = rgbToLab(hexToRgb(userColor));
-  const correctLab = rgbToLab(hexToRgb(correctColor));
+  try {
+    const userLab = rgbToLab(hexToRgb(userColor));
+    const correctLab = rgbToLab(hexToRgb(correctColor));
 
-  const deltaE = deltaE76(userLab, correctLab);
-  const percentage = Math.max(0, 100 - (deltaE / 2.3) * 100); // Normalize to 0-100%
-  let feedbackText = `A tipp ${percentage.toFixed(2)}%-ban helyes.`;
+    const deltaE = deltaE76(userLab, correctLab);
+    const percentage = Math.max(0, 100 - (deltaE / 2.3) * 100); // Normalize to 0-100%
+    let feedbackText = `A tipp ${percentage.toFixed(2)}%-ban helyes.`;
 
-  if (percentage > 90) {
-    feedbackText += ' Nagyon közel vagy!';
-  } else if (percentage > 70) {
-    feedbackText += ' Jó úton haladsz!';
-  } else if (percentage > 50) {
-    feedbackText += ' Nem rossz, de még dolgoznod kell rajta.';
-  } else {
-    feedbackText += ' Eléggé eltértél a helyes színtől.';
+    if (percentage > 90) {
+      feedbackText += ' Nagyon közel vagy!';
+    } else if (percentage > 70) {
+      feedbackText += ' Jó úton haladsz!';
+    } else if (percentage > 50) {
+      feedbackText += ' Nem rossz, de még dolgoznod kell rajta.';
+    } else {
+      feedbackText += ' Eléggé eltértél a helyes színtől.';
+    }
+
+    return feedbackText;
+  } catch (error) {
+    console.error('Color comparison failed:', error);
+    return 'Hiba történt a színek összehasonlítása során.';
   }
-
-  return feedbackText;
 }
 
 export function adjustHexColor(hex, component, value) {

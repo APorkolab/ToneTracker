@@ -11,29 +11,92 @@
   </head>
 
   <body class="bg-light p-5">
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link sr-only sr-only-focusable">
+      Ugrás a fő tartalomra
+    </a>
     <div class="container">
-      <h1 class="text-center mb-5">Tonetracker v.2.0.0</h1>
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <div class="color-box p-5 border" id="randomColor"></div>
-        </div>
-        <div class="col-md-6">
-          <div class="color-box p-5 border" id="userColor"></div>
-        </div>
-      </div>
+      <header>
+        <h1 class="text-center mb-5" id="main-title">Tonetracker v.2.0.0</h1>
+        <p class="text-center mb-4 sr-only" id="game-description">
+          Színfelismerő játék: memorizálj egy színt, majd próbáld meg reprodukálni hex kódok vagy RGB értékek segítségével.
+        </p>
+      </header>
+      
+      <main id="main-content" role="main" aria-labelledby="main-title" aria-describedby="game-description">
+        <section class="game-area" aria-label="Játék terület">
+          <div class="row mb-4" role="group" aria-label="Szín összehasonlító terület">
+            <div class="col-md-6">
+              <div class="color-display">
+                <label for="randomColor" class="sr-only">Megjegyzendő szín</label>
+                <div 
+                  class="color-box p-5 border" 
+                  id="randomColor"
+                  role="img"
+                  aria-label="Megjegyzendő szín"
+                  aria-describedby="random-color-help"
+                  tabindex="0"
+                ></div>
+                <div id="random-color-help" class="sr-only">
+                  Ez a szín jelenik meg 3 másodpercig. Memorizáld és próbáld reprodukálni.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="color-display">
+                <label for="userColor" class="sr-only">Az általad beállított szín</label>
+                <div 
+                  class="color-box p-5 border" 
+                  id="userColor"
+                  role="img"
+                  aria-label="Az általad beállított szín"
+                  aria-live="polite"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
       <div class="form-group">
+        <label for="colorInput" class="sr-only">Hex színkód bevitele</label>
         <input
           type="text"
           class="form-control"
           id="colorInput"
           placeholder="Írd be a hex színkódot (pl. ff5733)"
+          inputmode="text"
+          pattern="[0-9a-fA-F]{6}"
+          aria-describedby="color-input-help"
+          aria-label="Hex színkód bevitele"
         />
+        <small id="color-input-help" class="form-text text-muted">Hat karakteres hex kód, például ff5733.</small>
       </div>
-      <div class="form-group">
-        <button class="btn btn-primary">Ellenőriz</button>
-        <button class="btn btn-warning">Gép tippje</button>
+      <div class="form-group" role="group" aria-label="Játék vezérlő gombok">
+        <button 
+          class="btn btn-primary"
+          id="check-button"
+          aria-describedby="check-button-help"
+        >
+          Ellenőriz
+        </button>
+        <small id="check-button-help" class="sr-only">Ellenőrzi a beírt színkódot és visszajelzést ad.</small>
+        
+        <button 
+          class="btn btn-warning"
+          id="computer-tip-button"
+          aria-describedby="computer-tip-help"
+        >
+          Gép tippje
+        </button>
+        <small id="computer-tip-help" class="sr-only">Gép által generált tipp a helyes színhez.</small>
       </div>
-      <p id="feedback" class="text-danger"></p>
+      <div 
+        id="feedback" 
+        class="text-danger feedback-area"
+        role="status"
+        aria-live="polite"
+        aria-label="Játék visszajelzés"
+      ></div>
+      
       <div class="form-group">
         <label for="colorAdjust">Szín módosítása:</label>
         <input
@@ -41,53 +104,130 @@
           class="form-control"
           id="colorAdjust"
           placeholder="#000000"
+          aria-describedby="color-adjust-help"
         />
+        <small id="color-adjust-help" class="form-text text-muted">
+          Hex színkód közvetlen szerkesztése.
+        </small>
       </div>
-      <div class="form-group">
-        <label for="colorAdjust">Szín komponensek:</label>
-        <div class="input-group">
-          <button class="btn btn-secondary" id="minusRedButton">- R</button>
-          <button class="btn btn-secondary" id="plusRedButton">+ R</button>
-          <button class="btn btn-secondary" id="minusGreenButton">- G</button>
-          <button class="btn btn-secondary" id="plusGreenButton">+ G</button>
-          <button class="btn btn-secondary" id="minusBlueButton">- B</button>
-          <button class="btn btn-secondary" id="plusBlueButton">+ B</button>
+      
+      <fieldset class="form-group">
+        <legend class="sr-only">Szín komponensek beállítása</legend>
+        <label>Szín komponensek:</label>
+        <div class="input-group" role="group" aria-label="RGB értékek finomhangolása">
+          <button 
+            class="btn btn-secondary" 
+            id="minusRedButton"
+            aria-label="Vörös csatorna csökkentése"
+            title="Vörös érték csökkentése 1-gyel"
+          >- R</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusRedButton"
+            aria-label="Vörös csatorna növelése"
+            title="Vörös érték növelése 1-gyel"
+          >+ R</button>
+          <button 
+            class="btn btn-secondary" 
+            id="minusGreenButton"
+            aria-label="Zöld csatorna csökkentése"
+            title="Zöld érték csökkentése 1-gyel"
+          >- G</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusGreenButton"
+            aria-label="Zöld csatorna növelése"
+            title="Zöld érték növelése 1-gyel"
+          >+ G</button>
+          <button 
+            class="btn btn-secondary" 
+            id="minusBlueButton"
+            aria-label="Kék csatorna csökkentése"
+            title="Kék érték csökkentése 1-gyel"
+          >- B</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusBlueButton"
+            aria-label="Kék csatorna növelése"
+            title="Kék érték növelése 1-gyel"
+          >+ B</button>
         </div>
-      </div>
+      </fieldset>
+      
       <div class="form-group">
         <label for="difficulty">Nehézségi szint:</label>
-        <select class="form-control" id="difficulty">
-          <option value="easy">Könnyű</option>
-          <option value="medium">Közepes</option>
-          <option value="hard">Nehéz</option>
+        <select 
+          class="form-control" 
+          id="difficulty"
+          aria-describedby="difficulty-help"
+        >
+          <option value="easy">Könnyű (3 tipp)</option>
+          <option value="medium">Közepes (2 tipp)</option>
+          <option value="hard">Nehéz (1 tipp)</option>
         </select>
+        <small id="difficulty-help" class="form-text text-muted">
+          A nehézségi szint meghatározza a rendelkezésre álló tippek számát.
+        </small>
       </div>
-      <p>Idő: <span id="timer">0</span> másodperc</p>
-      <p>Pontok: <span id="score">0</span></p>
-      <button class="btn btn-success">Új játék</button>
+      
+      <div class="game-stats" role="group" aria-label="Játék statisztikák">
+        <p>Idő: <span id="timer" aria-label="Eltelt idő">0</span> másodperc</p>
+        <p>Pontok: <span id="score" aria-label="Jelenlegi pontok">0</span></p>
+      </div>
+      
+      <button 
+        class="btn btn-success"
+        id="new-game-button"
+        aria-describedby="new-game-help"
+      >
+        Új játék
+      </button>
+      <small id="new-game-help" class="sr-only">
+        Új játék indítása - egy véletlen szín jelenik meg 3 másodpercig.
+      </small>
+        </section>
+      </main>
     </div>
-    <!-- Modal -->
-    <div class="modal" id="resultModal">
-      <div class="modal-dialog">
+    
+    <!-- Result Modal -->
+    <div 
+      class="modal" 
+      id="resultModal"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-body"
+      aria-modal="true"
+      tabindex="-1"
+    >
+      <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Eredmény</h5>
-            <button type="button" class="close-button js-modal-close">
-              &times;
+            <h5 class="modal-title" id="modal-title">Játék eredménye</h5>
+            <button 
+              type="button" 
+              class="close-button js-modal-close"
+              aria-label="Ablak bezárása"
+              title="Bezárás"
+            >
+              <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            A helyes színkód: <span id="correctColorCode"></span>
+          <div class="modal-body" id="modal-body">
+            <p>A helyes színkód: <span id="correctColorCode" class="color-code"></span></p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary js-modal-close">
+            <button 
+              type="button" 
+              class="btn btn-secondary js-modal-close"
+              aria-label="Ablak bezárása"
+            >
               Bezár
             </button>
           </div>
         </div>
       </div>
     </div>
-    <div class="container mt-5">
+    <footer class="container mt-5" role="contentinfo" aria-label="Alkotó információk">
       <div class="creator-card text-center p-4">
         <h2 class="creator-name">Dr. Porkoláb Ádám</h2>
         <p class="creator-title">A digitális színek mestere</p>
@@ -97,25 +237,35 @@
           címért versenyez, és a billentyűzetével töri fel a színes világok
           titkait.
         </p>
-        <p class="creator-contact">
-          Elérhetőség:
-          <a
-            href="&#109;a&#105;l&#116;&#111;:&#97;&#100;&#97;&#109;&#64;&#112;&#111;&#114;&#107;&#111;&#108;&#97;&#98;&#46;&#104;&#117;"
-            >Ide írhatsz!</a
-          >
-        </p>
-        <p class="creator-contact">
-          Profiloldal:
-          <a href="https://www.adamporkolab.hu">www.adamporkolab.hu</a>
-        </p>
-        <p class="creator-contact">
-          GitHub:
-          <a href="https://github.com/APorkolab"
-            >https://github.com/APorkolab</a
-          >
-        </p>
+        <address class="creator-contact">
+          <p>
+            Elérhetőség:
+            <a
+              href="&#109;a&#105;l&#116;&#111;:&#97;&#100;&#97;&#109;&#64;&#112;&#111;&#114;&#107;&#111;&#108;&#97;&#98;&#46;&#104;&#117;"
+              aria-label="E-mail küldése Dr. Porkoláb Ádámnak"
+            >Ide írhatsz!</a>
+          </p>
+          <p>
+            Profiloldal:
+            <a 
+              href="https://www.adamporkolab.hu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Dr. Porkoláb Ádám profiloldala (megél egy új lapon)"
+            >www.adamporkolab.hu</a>
+          </p>
+          <p>
+            GitHub:
+            <a 
+              href="https://github.com/APorkolab"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profil (megél egy új lapon)"
+            >https://github.com/APorkolab</a>
+          </p>
+        </address>
       </div>
-    </div>
+    </footer>
 
     <script type="module" src="/src/js/main.js"></script>
   </body>
