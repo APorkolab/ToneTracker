@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>ToneTracker v.2.0.0 - by APorkolab</title>
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com">
+    <link rel="preconnect" href="//maxcdn.bootstrapcdn.com" crossorigin>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="ToneTracker">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ToneTracker">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="color-scheme" content="light">
+    
+    <!-- SEO and Social Meta Tags -->
+    <meta name="description" content="Test your color recognition skills with ToneTracker - a challenging color matching game that improves your visual accuracy.">
+    <meta name="keywords" content="color game, color matching, visual training, hex colors, RGB, color recognition">
+    <meta name="author" content="Dr. Porkoláb Ádám">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ToneTracker - Color Matching Game">
+    <meta property="og:description" content="Challenge your color recognition skills with this engaging color matching game.">
+    <meta property="og:image" content="/assets/screenshots/game-desktop-1.png">
+    <meta property="og:url" content="https://tonetracker.app">
+    <meta property="og:site_name" content="ToneTracker">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ToneTracker - Color Matching Game">
+    <meta name="twitter:description" content="Test your color recognition skills with this challenging game.">
+    <meta name="twitter:image" content="/assets/screenshots/game-mobile-1.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/icon-76x76.png">
+    <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#4f46e5">
+    
+    <!-- Microsoft tiles -->
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-144x144.png">
+    <meta name="msapplication-config" content="data:text/xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPGJyb3dzZXJjb25maWc+CiAgICA8bXNhcHBsaWNhdGlvbj4KICAgICAgICA8dGlsZT4KICAgICAgICAgICAgPHNxdWFyZTE1MHgxNTBsb2dvIHNyYz0iL2Fzc2V0cy9pY29ucy9pY29uLTE1MHgxNTAucG5nIi8+CiAgICAgICAgICAgIDxzcXVhcmUzMTB4MzEwbG9nbyBzcmM9Ii9hc3NldHMvaWNvbnMvaWNvbi0zMTB4MzEwLnBuZyIvPgogICAgICAgICAgICA8d2lkZTMxMHgxNTBsb2dvIHNyYz0iL2Fzc2V0cy9pY29ucy9pY29uLTMxMHgxNTAucG5nIi8+CiAgICAgICAgICAgIDxUaWxlQ29sb3I+IzRmNDZlNTwvVGlsZUNvbG9yPgogICAgICAgIDwvdGlsZT4KICAgIDwvbXNhcHBsaWNhdGlvbj4KPC9icm93c2VyY29uZmlnPgo=">
+    
+    <!-- CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    
+    <!-- Statistics styling -->
+    <style>
+      .stats-summary {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+      }
+      
+      .stats-summary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      
+      .stat-item {
+        padding: 8px;
+      }
+      
+      .stat-number {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #495057;
+        margin-bottom: 4px;
+      }
+      
+      .stat-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 500;
+      }
+      
+      @media (max-width: 768px) {
+        .stat-number {
+          font-size: 1.25rem;
+        }
+        
+        .stat-label {
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="./assets/main-v23vLnpd.js">
+    <link rel="modulepreload" href="./assets/colorUtils-D60y4g65.js">
+    <link rel="modulepreload" href="./assets/errorHandler-CkX5EuNs.js">
+    
+    <!-- Performance monitoring -->
+    <script>
+      // Mark navigation start
+      if ('performance' in window && 'mark' in performance) {
+        performance.mark('navigationStart');
+      }
+      
+      // Critical resource timing
+      window.addEventListener('load', () => {
+        if ('performance' in window && 'measure' in performance) {
+          performance.measure('pageLoad', 'navigationStart');
+          
+          // Report load time
+          const loadTime = performance.getEntriesByName('pageLoad')[0]?.duration;
+          if (loadTime) {
+            console.log('🚀 Page load time:', Math.round(loadTime), 'ms');
+          }
+        }
+      });
+    </script>
+    <script type="module" crossorigin src="./assets/index-iubofqsH.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/utils-CpYcuoze.js">
+    <link rel="modulepreload" crossorigin href="./assets/features-WjIVO5NO.js">
+    <link rel="modulepreload" crossorigin href="./assets/game-BlvZb4Jo.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-ypHWXNnO.css">
+  </head>
+
+  <body class="bg-light p-5">
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link sr-only sr-only-focusable">
+      Ugrás a fő tartalomra
+    </a>
+    <div class="container">
+      <header>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="text-center flex-grow-1" id="main-title">ToneTracker v.2.0.0</h1>
+          <div id="language-switcher-container" class="ml-3" aria-label="Nyelvválasztó"></div>
+        </div>
+        <p class="text-center mb-4 sr-only" id="game-description">
+          Színfelismerő játék: memorizálj egy színt, majd próbáld meg reprodukálni hex kódok vagy RGB értékek segítségével.
+        </p>
+      </header>
+      
+      <main id="main-content" role="main" aria-labelledby="main-title" aria-describedby="game-description">
+        <section class="game-area" aria-label="Játék terület">
+          <div class="row mb-4" role="group" aria-label="Szín összehasonlító terület">
+            <div class="col-md-6">
+              <div class="color-display">
+                <label for="randomColor" class="sr-only">Megjegyzendő szín</label>
+                <div 
+                  class="color-box p-5 border" 
+                  id="randomColor"
+                  role="img"
+                  aria-label="Megjegyzendő szín"
+                  aria-describedby="random-color-help"
+                  tabindex="0"
+                ></div>
+                <div id="random-color-help" class="sr-only">
+                  Ez a szín jelenik meg 3 másodpercig. Memorizáld és próbáld reprodukálni.
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="color-display">
+                <label for="userColor" class="sr-only">Az általad beállított szín</label>
+                <div 
+                  class="color-box p-5 border" 
+                  id="userColor"
+                  role="img"
+                  aria-label="Az általad beállított szín"
+                  aria-live="polite"
+                  tabindex="0"
+                ></div>
+              </div>
+            </div>
+          </div>
+      <div class="form-group">
+        <label for="colorInput" class="sr-only">Hex színkód bevitele</label>
+        <input
+          type="text"
+          class="form-control"
+          id="colorInput"
+          placeholder="Írd be a hex színkódot (pl. ff5733)"
+          inputmode="text"
+          pattern="[0-9a-fA-F]{6}"
+          aria-describedby="color-input-help"
+          aria-label="Hex színkód bevitele"
+        />
+        <small id="color-input-help" class="form-text text-muted">Hat karakteres hex kód, például ff5733.</small>
+      </div>
+      <div class="form-group" role="group" aria-label="Játék vezérlő gombok">
+        <button 
+          class="btn btn-primary"
+          id="check-button"
+          aria-describedby="check-button-help"
+        >
+          Ellenőriz
+        </button>
+        <small id="check-button-help" class="sr-only">Ellenőrzi a beírt színkódot és visszajelzést ad.</small>
+        
+        <button 
+          class="btn btn-warning"
+          id="computer-tip-button"
+          aria-describedby="computer-tip-help"
+        >
+          Gép tippje
+        </button>
+        <small id="computer-tip-help" class="sr-only">Gép által generált tipp a helyes színhez.</small>
+      </div>
+      <div 
+        id="feedback" 
+        class="text-danger feedback-area"
+        role="status"
+        aria-live="polite"
+        aria-label="Játék visszajelzés"
+      ></div>
+      
+      <div class="form-group">
+        <label for="colorAdjust">Szín módosítása:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="colorAdjust"
+          placeholder="#000000"
+          aria-describedby="color-adjust-help"
+        />
+        <small id="color-adjust-help" class="form-text text-muted">
+          Hex színkód közvetlen szerkesztése.
+        </small>
+      </div>
+      
+      <fieldset class="form-group">
+        <legend class="sr-only">Szín komponensek beállítása</legend>
+        <label>Szín komponensek:</label>
+        <div class="input-group" role="group" aria-label="RGB értékek finomhangolása">
+          <button 
+            class="btn btn-secondary" 
+            id="minusRedButton"
+            aria-label="Vörös csatorna csökkentése"
+            title="Vörös érték csökkentése 1-gyel"
+          >- R</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusRedButton"
+            aria-label="Vörös csatorna növelése"
+            title="Vörös érték növelése 1-gyel"
+          >+ R</button>
+          <button 
+            class="btn btn-secondary" 
+            id="minusGreenButton"
+            aria-label="Zöld csatorna csökkentése"
+            title="Zöld érték csökkentése 1-gyel"
+          >- G</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusGreenButton"
+            aria-label="Zöld csatorna növelése"
+            title="Zöld érték növelése 1-gyel"
+          >+ G</button>
+          <button 
+            class="btn btn-secondary" 
+            id="minusBlueButton"
+            aria-label="Kék csatorna csökkentése"
+            title="Kék érték csökkentése 1-gyel"
+          >- B</button>
+          <button 
+            class="btn btn-secondary" 
+            id="plusBlueButton"
+            aria-label="Kék csatorna növelése"
+            title="Kék érték növelése 1-gyel"
+          >+ B</button>
+        </div>
+      </fieldset>
+      
+      <div class="form-group">
+        <label for="difficulty">Nehézségi szint:</label>
+        <select 
+          class="form-control" 
+          id="difficulty"
+          aria-describedby="difficulty-help"
+        >
+          <option value="easy">Könnyű (3 tipp)</option>
+          <option value="medium">Közepes (2 tipp)</option>
+          <option value="hard">Nehéz (1 tipp)</option>
+        </select>
+        <small id="difficulty-help" class="form-text text-muted">
+          A nehézségi szint meghatározza a rendelkezésre álló tippek számát.
+        </small>
+      </div>
+      
+      <div class="game-stats" role="group" aria-label="Játék statisztikák">
+        <p>Idő: <span id="timer" aria-label="Eltelt idő">0</span> másodperc</p>
+        <p>Pontok: <span id="score" aria-label="Jelenlegi pontok">0</span></p>
+      </div>
+      
+      <!-- Statistics Summary -->
+      <div class="stats-summary mt-4 p-3 bg-light rounded" role="region" aria-label="Összesítő statisztikák">
+        <h3 class="h5 mb-3">📈 Statisztikák</h3>
+        <div class="row">
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="total-games">0</div>
+              <div class="stat-label">Játékok</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="win-rate">0%</div>
+              <div class="stat-label">Nyerési arány</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="best-score">0</div>
+              <div class="stat-label">Legjobb pont</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 text-center">
+            <div class="stat-item">
+              <div class="stat-number" id="avg-accuracy">0%</div>
+              <div class="stat-label">Átlag pontosság</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button 
+        class="btn btn-success"
+        id="new-game-button"
+        aria-describedby="new-game-help"
+      >
+        Új játék
+      </button>
+      <small id="new-game-help" class="sr-only">
+        Új játék indítása - egy véletlen szín jelenik meg 3 másodpercig.
+      </small>
+        </section>
+      </main>
+    </div>
+    
+    <!-- Result Modal -->
+    <div 
+      class="modal" 
+      id="resultModal"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-body"
+      aria-modal="true"
+      tabindex="-1"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">Játék eredménye</h5>
+            <button 
+              type="button" 
+              class="close-button js-modal-close"
+              aria-label="Ablak bezárása"
+              title="Bezárás"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modal-body">
+            <p>A helyes színkód: <span id="correctColorCode" class="color-code"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button 
+              type="button" 
+              class="btn btn-secondary js-modal-close"
+              aria-label="Ablak bezárása"
+            >
+              Bezár
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="container mt-5" role="contentinfo" aria-label="Alkotó információk">
+      <div class="creator-card text-center p-4">
+        <h2 class="creator-name">Dr. Porkoláb Ádám</h2>
+        <p class="creator-title">A digitális színek mestere</p>
+        <p class="creator-bio">
+          Amikor épp nem színkódokat tör be, akkor új módszereket talál ki a
+          virtuális szivárványok hajszolására. Következetesen a 'Hex-kódtörő'
+          címért versenyez, és a billentyűzetével töri fel a színes világok
+          titkait.
+        </p>
+        <address class="creator-contact">
+          <p>
+            Elérhetőség:
+            <a
+              href="&#109;a&#105;l&#116;&#111;:&#97;&#100;&#97;&#109;&#64;&#112;&#111;&#114;&#107;&#111;&#108;&#97;&#98;&#46;&#104;&#117;"
+              aria-label="E-mail küldése Dr. Porkoláb Ádámnak"
+            >Ide írhatsz!</a>
+          </p>
+          <p>
+            Profiloldal:
+            <a 
+              href="https://www.adamporkolab.hu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Dr. Porkoláb Ádám profiloldala (megél egy új lapon)"
+            >www.adamporkolab.hu</a>
+          </p>
+          <p>
+            GitHub:
+            <a 
+              href="https://github.com/APorkolab"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profil (megél egy új lapon)"
+            >https://github.com/APorkolab</a>
+          </p>
+        </address>
+      </div>
+    </footer>
+
+    
+    <!-- Service Worker Registration -->
+    <script>
+      // Register service worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            console.log('🔧 Registering service worker...');
+            const registration = await navigator.serviceWorker.register('/sw.js', {
+              scope: '/'
+            });
+            
+            console.log('✅ SW registered:', registration.scope);
+            
+            // Handle service worker updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              console.log('🔄 New service worker installing...');
+              
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('✨ New service worker available!');
+                  
+                  // Show update notification
+                  if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('ToneTracker Updated', {
+                      body: 'A new version is available. Please refresh the page.',
+                      icon: '/assets/icons/icon-192x192.png',
+                      badge: '/assets/icons/icon-192x192.png'
+                    });
+                  }
+                  
+                  // Create update banner
+                  const updateBanner = document.createElement('div');
+                  updateBanner.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; right: 0; background: #4f46e5; color: white; padding: 10px; text-align: center; z-index: 10000;">
+                      <span>ToneTracker has been updated! </span>
+                      <button onclick="window.location.reload()" style="background: white; color: #4f46e5; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 10px;">Reload</button>
+                      <button onclick="this.parentElement.style.display='none'" style="background: transparent; color: white; border: 1px solid white; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 5px;">Later</button>
+                    </div>
+                  `;
+                  document.body.appendChild(updateBanner);
+                }
+              });
+            });
+            
+            // Enable push notifications
+            if ('PushManager' in window) {
+              const permission = await Notification.requestPermission();
+              console.log('🔔 Notification permission:', permission);
+            }
+            
+          } catch (error) {
+            console.error('❌ SW registration failed:', error);
+          }
+        });
+        
+        // Listen for messages from service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          console.log('💬 Message from SW:', event.data);
+          
+          if (event.data.type === 'ANALYTICS_SYNC_REQUEST') {
+            // Trigger analytics sync from main app
+            if (window.analytics) {
+              window.analytics.flush();
+            }
+          }
+        });
+      } else {
+        console.warn('⚠️ Service workers not supported');
+      }
+      
+      // App install prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('📱 Install prompt available');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install button
+        const installButton = document.createElement('button');
+        installButton.innerHTML = '📱 Install App';
+        installButton.className = 'btn btn-info position-fixed';
+        installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 50px; padding: 10px 15px;';
+        
+        installButton.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('📱 Install outcome:', outcome);
+            deferredPrompt = null;
+            installButton.remove();
+          }
+        });
+        
+        document.body.appendChild(installButton);
+        
+        // Remove after 10 seconds if not clicked
+        setTimeout(() => {
+          if (installButton.parentElement) {
+            installButton.remove();
+          }
+        }, 10000);
+      });
+      
+      // Track app installation
+      window.addEventListener('appinstalled', () => {
+        console.log('✅ App installed successfully');
+        if (window.analytics) {
+          window.analytics.track('app_installed', {
+            timestamp: Date.now(),
+            userAgent: navigator.userAgent
+          });
+        }
+      });
+      
+      // Detect if app is running as PWA
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          window.navigator.standalone === true;
+      
+      if (isStandalone) {
+        console.log('📱 Running as PWA');
+        document.documentElement.classList.add('pwa-mode');
+        
+        if (window.analytics) {
+          window.analytics.track('pwa_launch', {
+            displayMode: 'standalone',
+            timestamp: Date.now()
+          });
+        }
+      }
+      
+      // Handle offline/online status
+      window.addEventListener('online', () => {
+        console.log('🌐 Back online');
+        const offlineIndicator = document.querySelector('.offline-indicator');
+        if (offlineIndicator) {
+          offlineIndicator.remove();
+        }
+      });
+      
+      window.addEventListener('offline', () => {
+        console.log('📡 Gone offline');
+        const indicator = document.createElement('div');
+        indicator.className = 'offline-indicator';
+        indicator.innerHTML = `
+          <div style="position: fixed; top: 0; left: 0; right: 0; background: #dc3545; color: white; padding: 10px; text-align: center; z-index: 10000;">
+            📡 You're offline - Some features may not work properly
+          </div>
+        `;
+        document.body.appendChild(indicator);
+      });
+    </script>
+  </body>
+</html>
