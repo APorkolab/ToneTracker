@@ -42,7 +42,7 @@ function calculateAccuracy() {
  * @param {number} score - Final score
  * @param {Object} stats - Current game statistics
  */
-function checkAndShowAchievements(won, score, stats) {
+function checkAndShowAchievements(won, score) {
   if (!won) return;
   
   try {

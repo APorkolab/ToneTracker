@@ -3,7 +3,8 @@
  * Privacy-focused analytics with local storage and optional external reporting
  */
 
-import { ToneTrackerError, ERROR_CATEGORIES, ERROR_LEVELS } from './errorHandler.js';
+// Error handling imports - commented out to avoid unused variable warnings
+// import { ToneTrackerError, ERROR_CATEGORIES, ERROR_LEVELS } from './errorHandler.js';
 import { storage } from './storage.js';
 
 /**

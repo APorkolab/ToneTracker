@@ -4,7 +4,8 @@
  */
 
 import { analytics, EVENT_TYPES } from './analytics.js';
-import { ToneTrackerError, ERROR_CATEGORIES, ERROR_LEVELS } from './errorHandler.js';
+// Error handling imports - commented out to avoid unused variable warnings
+// import { ToneTrackerError, ERROR_CATEGORIES, ERROR_LEVELS } from './errorHandler.js';
 
 /**
  * Performance metrics collection

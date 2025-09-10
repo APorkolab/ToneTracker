@@ -142,7 +142,7 @@ class ErrorLogger {
    * Send error to external logging service (placeholder)
    * @private
    */
-  logToExternalService(logEntry) {
+  logToExternalService(/* logEntry */) {
     // In a real application, you would send to services like Sentry, LogRocket, etc.
     // fetch('/api/errors', {
     //   method: 'POST',

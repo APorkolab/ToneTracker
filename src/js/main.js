@@ -10,7 +10,7 @@ import {
 import { isValidHexColor } from './colorUtils.js';
 import { setDifficulty } from './state.js';
 import { i18n } from './i18n.js';
-import { analytics, trackEvent, EVENT_TYPES, trackFeature } from './analytics.js';
+import { analytics, trackEvent, EVENT_TYPES } from './analytics.js';
 import { storage } from './storage.js';
 import { performanceMonitor, startTiming, endTiming, fpsMonitor } from './performance.js';
 import { pwaManager } from './pwaManager.js';

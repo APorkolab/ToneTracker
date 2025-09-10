@@ -1,7 +1,8 @@
 import { DOM, STRINGS } from './constants.js';
 import { state } from './state.js';
 import { storage } from './storage.js';
-import { i18n } from './i18n.js';
+// Import i18n commented out to avoid unused variable warning
+// import { i18n } from './i18n.js';
 
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600);

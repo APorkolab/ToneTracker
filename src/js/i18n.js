@@ -173,7 +173,7 @@ const translations = {
     // Feedback messages
     memorizeColor: 'Memorize the color!',
     congratulations: 'Congratulations! You got it!',
-    sorry: 'Sorry, you didn\\'t get it.',
+    sorry: 'Sorry, you didn\'t get it.',
     tryAgain: 'Try again! You have {{count}} more attempts left. ',
     noMoreTips: 'No more tips',
     computerTip: 'Computer tip ({{count}} remaining)',
@@ -182,9 +182,9 @@ const translations = {
     // Color comparison feedback
     colorAccuracy: 'Your guess is {{percentage}}% accurate.',
     veryClose: 'Very close!',
-    goodProgress: 'You\\'re on the right track!',
+    goodProgress: 'You\'re on the right track!',
     needsWork: 'Not bad, but you need to work on it.',
-    farOff: 'You\\'re quite far from the correct color.',
+    farOff: 'You\'re quite far from the correct color.',
     
     // Game stats
     time: 'Time',
@@ -213,7 +213,7 @@ const translations = {
     website: 'Website:',
     github: 'GitHub:',
     contactEmail: 'Send email to Dr. Ádám Porkoláb',
-    websiteLink: 'Dr. Ádám Porkoláb\\'s website (opens in new tab)',
+    websiteLink: 'Dr. Ádám Porkoláb\'s website (opens in new tab)',
     githubLink: 'GitHub profile (opens in new tab)',
     
     // Error messages
@@ -412,7 +412,7 @@ export class I18n {
    */
   interpolate(template, params) {
     return template.replace(/\\{\\{(\\w+)\\}\\}/g, (match, key) => {
-      return params.hasOwnProperty(key) ? String(params[key]) : match;
+      return Object.prototype.hasOwnProperty.call(params, key) ? String(params[key]) : match;
     });
   }
   
