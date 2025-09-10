@@ -107,6 +107,19 @@ jobs:
       env:
         NODE_ENV: production
         
+    - name: 📋 Copy CNAME file to dist
+      run: cp CNAME dist/
+      
+    - name: ✅ Validate build output
+      run: |
+        echo "## Build Validation 🔍" >> $GITHUB_STEP_SUMMARY
+        echo "### Files in dist directory:" >> $GITHUB_STEP_SUMMARY
+        ls -la dist/ >> $GITHUB_STEP_SUMMARY
+        echo "### Checking required files:" >> $GITHUB_STEP_SUMMARY
+        test -f dist/index.html && echo "✅ index.html exists" >> $GITHUB_STEP_SUMMARY || echo "❌ index.html missing" >> $GITHUB_STEP_SUMMARY
+        test -f dist/CNAME && echo "✅ CNAME exists" >> $GITHUB_STEP_SUMMARY || echo "❌ CNAME missing" >> $GITHUB_STEP_SUMMARY
+        test -d dist/assets && echo "✅ assets directory exists" >> $GITHUB_STEP_SUMMARY || echo "❌ assets directory missing" >> $GITHUB_STEP_SUMMARY
+        
     - name: 📊 Analyze bundle size
       run: |
         npx bundlesize
@@ -123,11 +136,17 @@ jobs:
       continue-on-error: true
       
     - name: 📱 Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        cname: tonetracker.app # Optional: custom domain
+        cname: tonetracker.app
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: '🚀 Deploy ToneTracker v${{ github.sha }}'
+        enable_jekyll: false
+        allow_empty_commit: false
         
     - name: 📈 Upload build artifacts
       uses: actions/upload-artifact@v3
