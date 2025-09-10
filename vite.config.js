@@ -17,9 +17,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // Vendor libraries
-          vendor: ['bootstrap'],
-          
           // Core game modules
           game: [
             'src/js/game.js',
@@ -82,7 +79,7 @@ export default defineConfig({
   
   // Optimization settings
   optimizeDeps: {
-    include: ['bootstrap'],
+    include: [],
     exclude: []
   },
   
