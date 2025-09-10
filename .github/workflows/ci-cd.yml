@@ -148,7 +148,7 @@ jobs:
         pkill -f "python3 -m http.server"
       continue-on-error: true
       
-    - name: 📱 Deploy to GitHub Pages
+    - name: 🚀 Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
