@@ -2,12 +2,96 @@
 <html lang="hu">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>ToneTracker v.2.0.0 - by APorkolab</title>
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com">
+    <link rel="preconnect" href="//maxcdn.bootstrapcdn.com" crossorigin>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="application-name" content="ToneTracker">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ToneTracker">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="color-scheme" content="light">
+    
+    <!-- SEO and Social Meta Tags -->
+    <meta name="description" content="Test your color recognition skills with ToneTracker - a challenging color matching game that improves your visual accuracy.">
+    <meta name="keywords" content="color game, color matching, visual training, hex colors, RGB, color recognition">
+    <meta name="author" content="Dr. Porkoláb Ádám">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ToneTracker - Color Matching Game">
+    <meta property="og:description" content="Challenge your color recognition skills with this engaging color matching game.">
+    <meta property="og:image" content="/assets/screenshots/game-desktop-1.png">
+    <meta property="og:url" content="https://tonetracker.app">
+    <meta property="og:site_name" content="ToneTracker">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ToneTracker - Color Matching Game">
+    <meta name="twitter:description" content="Test your color recognition skills with this challenging game.">
+    <meta name="twitter:image" content="/assets/screenshots/game-mobile-1.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/icon-16x16.png">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/icon-76x76.png">
+    <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#4f46e5">
+    
+    <!-- Microsoft tiles -->
+    <meta name="msapplication-TileImage" content="/assets/icons/icon-144x144.png">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- CSS -->
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
+      crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="/src/css/style.css">
+    <link rel="stylesheet" href="/src/css/_accessibility.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="modulepreload" href="/src/js/main.js">
+    <link rel="modulepreload" href="/src/js/colorUtils.js">
+    <link rel="modulepreload" href="/src/js/errorHandler.js">
+    
+    <!-- Performance monitoring -->
+    <script>
+      // Mark navigation start
+      if ('performance' in window && 'mark' in performance) {
+        performance.mark('navigationStart');
+      }
+      
+      // Critical resource timing
+      window.addEventListener('load', () => {
+        if ('performance' in window && 'measure' in performance) {
+          performance.measure('pageLoad', 'navigationStart');
+          
+          // Report load time
+          const loadTime = performance.getEntriesByName('pageLoad')[0]?.duration;
+          if (loadTime) {
+            console.log('🚀 Page load time:', Math.round(loadTime), 'ms');
+          }
+        }
+      });
+    </script>
   </head>
 
   <body class="bg-light p-5">
@@ -268,5 +352,158 @@
     </footer>
 
     <script type="module" src="/src/js/main.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      // Register service worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', async () => {
+          try {
+            console.log('🔧 Registering service worker...');
+            const registration = await navigator.serviceWorker.register('/sw.js', {
+              scope: '/'
+            });
+            
+            console.log('✅ SW registered:', registration.scope);
+            
+            // Handle service worker updates
+            registration.addEventListener('updatefound', () => {
+              const newWorker = registration.installing;
+              console.log('🔄 New service worker installing...');
+              
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  console.log('✨ New service worker available!');
+                  
+                  // Show update notification
+                  if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('ToneTracker Updated', {
+                      body: 'A new version is available. Please refresh the page.',
+                      icon: '/assets/icons/icon-192x192.png',
+                      badge: '/assets/icons/icon-192x192.png'
+                    });
+                  }
+                  
+                  // Create update banner
+                  const updateBanner = document.createElement('div');
+                  updateBanner.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; right: 0; background: #4f46e5; color: white; padding: 10px; text-align: center; z-index: 10000;">
+                      <span>ToneTracker has been updated! </span>
+                      <button onclick="window.location.reload()" style="background: white; color: #4f46e5; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 10px;">Reload</button>
+                      <button onclick="this.parentElement.style.display='none'" style="background: transparent; color: white; border: 1px solid white; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 5px;">Later</button>
+                    </div>
+                  `;
+                  document.body.appendChild(updateBanner);
+                }
+              });
+            });
+            
+            // Enable push notifications
+            if ('PushManager' in window) {
+              const permission = await Notification.requestPermission();
+              console.log('🔔 Notification permission:', permission);
+            }
+            
+          } catch (error) {
+            console.error('❌ SW registration failed:', error);
+          }
+        });
+        
+        // Listen for messages from service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          console.log('💬 Message from SW:', event.data);
+          
+          if (event.data.type === 'ANALYTICS_SYNC_REQUEST') {
+            // Trigger analytics sync from main app
+            if (window.analytics) {
+              window.analytics.flush();
+            }
+          }
+        });
+      } else {
+        console.warn('⚠️ Service workers not supported');
+      }
+      
+      // App install prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('📱 Install prompt available');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install button
+        const installButton = document.createElement('button');
+        installButton.innerHTML = '📱 Install App';
+        installButton.className = 'btn btn-info position-fixed';
+        installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000; border-radius: 50px; padding: 10px 15px;';
+        
+        installButton.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('📱 Install outcome:', outcome);
+            deferredPrompt = null;
+            installButton.remove();
+          }
+        });
+        
+        document.body.appendChild(installButton);
+        
+        // Remove after 10 seconds if not clicked
+        setTimeout(() => {
+          if (installButton.parentElement) {
+            installButton.remove();
+          }
+        }, 10000);
+      });
+      
+      // Track app installation
+      window.addEventListener('appinstalled', () => {
+        console.log('✅ App installed successfully');
+        if (window.analytics) {
+          window.analytics.track('app_installed', {
+            timestamp: Date.now(),
+            userAgent: navigator.userAgent
+          });
+        }
+      });
+      
+      // Detect if app is running as PWA
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                          window.navigator.standalone === true;
+      
+      if (isStandalone) {
+        console.log('📱 Running as PWA');
+        document.documentElement.classList.add('pwa-mode');
+        
+        if (window.analytics) {
+          window.analytics.track('pwa_launch', {
+            displayMode: 'standalone',
+            timestamp: Date.now()
+          });
+        }
+      }
+      
+      // Handle offline/online status
+      window.addEventListener('online', () => {
+        console.log('🌐 Back online');
+        const offlineIndicator = document.querySelector('.offline-indicator');
+        if (offlineIndicator) {
+          offlineIndicator.remove();
+        }
+      });
+      
+      window.addEventListener('offline', () => {
+        console.log('📡 Gone offline');
+        const indicator = document.createElement('div');
+        indicator.className = 'offline-indicator';
+        indicator.innerHTML = `
+          <div style="position: fixed; top: 0; left: 0; right: 0; background: #dc3545; color: white; padding: 10px; text-align: center; z-index: 10000;">
+            📡 You're offline - Some features may not work properly
+          </div>
+        `;
+        document.body.appendChild(indicator);
+      });
+    </script>
   </body>
 </html>

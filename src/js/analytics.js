@@ -36,6 +36,7 @@ export const EVENT_TYPES = {
   // Performance
   LOAD_TIME: 'load_time',
   RENDER_TIME: 'render_time',
+  PERFORMANCE_ISSUE: 'performance_issue',
   
   // Accessibility
   ACCESSIBILITY_FEATURE_USED: 'accessibility_feature_used',
