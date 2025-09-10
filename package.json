@@ -19,7 +19,7 @@
     "e2e": "./scripts/test-e2e.sh",
     "e2e:dev": "npx playwright test",
     "e2e:ui": "npx playwright test --ui",
-    "serve": "python3 -m http.server 8080 --directory .",
+    "serve": "python3 -m http.server 8080 --directory dist",
     "analyze": "npx vite-bundle-analyzer dist",
     "performance:audit": "npx lighthouse http://localhost:8080 --output=html --output-path=./lighthouse-report.html",
     "pwa:validate": "npx pwa-asset-generator src/assets/logo.svg assets/icons --background '#4f46e5' --index ./index.html",
